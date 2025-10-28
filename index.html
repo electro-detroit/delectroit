@@ -4,29 +4,36 @@
     <!--Bootstrap framework-->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
-<!--LeafletJS Library-->   
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<!--Leaflet CSS (latest)-->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@latest/dist/leaflet.css" />
+<!--Leaflet JS (latest)-->
+<script src="https://unpkg.com/leaflet@latest/dist/leaflet.js"></script>
+
     <title>Delectroit</title>
 
   <style>
-#map{ width: 900px; height: 500px; }
-
+html { height: 100% }
+body { height: 100%; margin: 0; padding: 0; }
+.map { height: 100% }
   </style>
 
 </head>
 <body>
-<div id="map"></div>
-  <script>
-var map = L.map('map').setView([55.860916,-4.251433], 12);
-L.tileLayer('https://leaflet-extras.github.io/leaflet-providers/', { 
+<div id="map" class="map"></div>
+
+<script>
+// center on the geographic center of the contiguous United States, zoomed out to show the country
+var map = L.map('map').setView([39.8283, -98.5795], 4);
+
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { 
     maxZoom: 19,
-    attribution: '&copy; <a href="https://leaflet-extras.github.io/leaflet-providers/">OpenStreetMap</a>'
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-var marker = L.marker([55.861717, -4.2417]).addTo(map);
-marker.bindPopup("<b><center>Strathclyde University</center></b>I'm a great place :).");
-  </script>
+// ensure Leaflet recalculates size if the viewport changes
+setTimeout(function(){ map.invalidateSize(); }, 200);
+window.addEventListener('resize', function(){ map.invalidateSize(); });
+</script>
 
 </body>
 </html>
