@@ -3,11 +3,11 @@
 <head>
     <!--Bootstrap framework-->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
-<!--Leaflet CSS (latest)-->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@latest/dist/leaflet.css" />
-<!--Leaflet JS (latest)-->
-<script src="https://unpkg.com/leaflet@latest/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
+    <!--Leaflet CSS (latest)-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@latest/dist/leaflet.css" />
+    <!--Leaflet JS (latest)-->
+    <script src="https://unpkg.com/leaflet@latest/dist/leaflet.js"></script>
 
     <title>Delectroit</title>
 
@@ -22,13 +22,17 @@ body { height: 100%; margin: 0; padding: 0; }
 <div id="map" class="map"></div>
 
 <script>
-// center on the geographic center of the contiguous United States, zoomed out to show the country
-var map = L.map('map').setView([39.8283, -98.5795], 4);
+// center on Detroit, MI
+var map = L.map('map').setView([42.3314, -83.0458], 12);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { 
     maxZoom: 19,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
+
+// add a marker at downtown Detroit
+L.marker([42.3314, -83.0458]).addTo(map)
+  .bindPopup('<strong>Detroit, MI</strong>').openPopup();
 
 // ensure Leaflet recalculates size if the viewport changes
 setTimeout(function(){ map.invalidateSize(); }, 200);
