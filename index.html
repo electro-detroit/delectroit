@@ -6,12 +6,24 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- jQuery (required by jQuery UI) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- jQuery UI files -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
+    <!-- jQuery UI Touch js (required for touchscreen use) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
     <!--Leaflet CSS (latest)-->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@latest/dist/leaflet.css" />
     <!--Leaflet JS (latest)-->
     <script src="https://unpkg.com/leaflet@latest/dist/leaflet.js"></script>
+
+    <!-- Leaflet Time-Slider plugin (SliderControl) -->
+    <script src="js/SliderControl.js"></script>
 
     <title>Delectroit</title>
 
@@ -31,7 +43,7 @@ body { height: 100%; margin: 0; padding: 0; }
 /* Bootstrap-icon marker styling */
 .bi-marker {
   font-size: 24px;        /* adjust marker size */
-  color: #dc3545;         /* marker color (use any CSS color) */
+  color: #6f42c1;         /* purple marker color */
   line-height: 1;
   display: inline-block;
   text-shadow: 0 1px 2px rgba(0,0,0,0.3);
@@ -58,8 +70,8 @@ body { height: 100%; margin: 0; padding: 0; }
       <div class="modal-body">
         <nav class="nav flex-column">
           <a class="nav-link" href="#" id="zoom-detroit">Zoom to Detroit</a>
-          <a class="nav-link" href="#" id="fit-markers">Project Description</a>
-          <a class="nav-link" href="#" id="about-link">Our Team</a>
+          <a class="nav-link" href="#" id="fit-markers">Fit all markers</a>
+          <a class="nav-link" href="#" id="about-link">About</a>
         </nav>
       </div>
       <div class="modal-footer">
@@ -97,55 +109,42 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-// (removed default blue marker — use speakerIcon marker below)
+// (Removed duplicate default markers — keep only the speakerIcon markers below)
 
 // ensure Leaflet recalculates size if the viewport changes
 setTimeout(function(){ map.invalidateSize(); }, 200);
 window.addEventListener('resize', function(){ map.invalidateSize(); });
 
-//Icon
-var myIcon = L.icon({
-    iconUrl: 'my-icon.png',
-    iconSize: [38, 95],
-    iconAnchor: [22, 94],
-    popupAnchor: [-3, -76],
-   
+
+
+// Use a Bootstrap Icon inside a divIcon
+const biHtml = `<i class="bi bi-speaker-fill bi-marker" aria-hidden="true"></i>`;
+const speakerIcon = L.divIcon({
+  className: '',           // keep empty so only our <i> styles apply
+  html: biHtml,
+  iconSize: [28,28],
+  iconAnchor: [14,14],
+  popupAnchor: [0,-14]
 });
-L.marker([50.505, 30.57], {icon: myIcon}).addTo(map);
 
-var marker = L.marker([42.3280226, -83.0448932]).addTo(map);
-marker.bindPopup("<b><center>Hart Plaza</center></b>Hart Plaza :).");
+// apply to markers
+L.marker([42.3314, -83.0458], { icon: speakerIcon }).addTo(map)
+  .bindPopup('<strong>Detroit, MI</strong>').openPopup();
 
-var marker = L.marker([42.3630469, -83.0852008]).addTo(map);
-marker.bindPopup("<b><center>Marble Bar</center></b>Marble Bar :).");
-
-var marker = L.marker([42.3580524, -83.0167091]).addTo(map);
-marker.bindPopup("<b><center>Spot Lite</center></b>Spot Lite :).");
-
-var marker = L.marker([42.3726414, -83.0635704]).addTo(map);
-marker.bindPopup("<b><center>Tangent Gallery and Hasting Street Ballroom</center></b>Tangent Gallery and Hasting Street Ballroom :).");
-
-var marker = L.marker([42.3380472, -83.0625672]).addTo(map);
-marker.bindPopup("<b><center>T+V Lounge</center></b>T+V Lounge :).");
-
-var marker = L.marker([42.3336153, -83.0548439]).addTo(map);
-marker.bindPopup("<b><center>City Club</center></b>Leland City Club :).");
-
-var marker = L.marker([42.3626399, -83.0819244]).addTo(map);
-marker.bindPopup("<b><center>LNCLN FCTRY</center></b>The Lincoln Factory :).");
-
-var marker = L.marker([42.3311594, -83.0730077]).addTo(map);
-marker.bindPopup("<b><center>MCW</center></b>Motor City Wine :).");
-
-var marker = L.marker([42.3338199, -83.0499098]).addTo(map);
-marker.bindPopup("<b><center>SPKR BOX</center></b>SPKRBOX :).");
-
-var marker = L.marker([42.3668187, -83.0767079]).addTo(map);
-marker.bindPopup("<b><center>NORTHERN LIGHTS </center></b>Northern Lights Lounge :).");
+L.marker([42.3280226, -83.0448932], {icon: speakerIcon}).addTo(map).bindPopup("<b><center>Hart Plaza</center></b>Hart Plaza :)");
+L.marker([42.3630469, -83.0852008], {icon: speakerIcon}).addTo(map).bindPopup("<b><center>Marble Bar</center></b>Marble Bar :)");
+L.marker([42.3580524, -83.0167091], {icon: speakerIcon}).addTo(map).bindPopup("<b><center>Spot Lite</center></b>Spot Lite :)");
+L.marker([42.3726414, -83.0635704], {icon: speakerIcon}).addTo(map).bindPopup("<b><center>Tangent Gallery and Hasting Street Ballroom</center></b>Tangent Gallery and Hasting Street Ballroom :)");
+L.marker([42.3380472, -83.0625672], {icon: speakerIcon}).addTo(map).bindPopup("<b><center>T+V Lounge</center></b>T+V Lounge :)");
+L.marker([42.3336153, -83.0548439], {icon: speakerIcon}).addTo(map).bindPopup("<b><center>City Club</center></b>Leland City Club :)");
+L.marker([42.3626399, -83.0819244], {icon: speakerIcon}).addTo(map).bindPopup("<b><center>LNCLN FCTRY</center></b>The Lincoln Factory :)");
+L.marker([42.3311594, -83.0730077], {icon: speakerIcon}).addTo(map).bindPopup("<b><center>MCW</center></b>Motor City Wine :)");
+L.marker([42.3338199, -83.0499098], {icon: speakerIcon}).addTo(map).bindPopup("<b><center>SPKR BOX</center></b>SPKRBOX :)");
+L.marker([42.3668187, -83.0767079], {icon: speakerIcon}).addTo(map).bindPopup("<b><center>NORTHERN LIGHTS </center></b>Northern Lights Lounge :)");
 
 <!-- Harry add your five locations here --> 
 
-// collect all markers into a layer group for "fit" action
+// collect all markers into a layer group for "fit" action (moved here so it picks up the speakerIcon markers)
 var allMarkers = L.featureGroup();
 map.eachLayer(function(layer){
   if (layer instanceof L.Marker) allMarkers.addLayer(layer);
@@ -199,37 +198,6 @@ document.addEventListener('DOMContentLoaded', function(){
     modal.show();
   }
 });
-
-// Use a Bootstrap Icon inside a divIcon
-const biHtml = `<i class="bi bi-speaker-fill bi-marker" aria-hidden="true"></i>`;
-const speakerIcon = L.divIcon({
-  className: '',           // keep empty so only our <i> styles apply
-  html: biHtml,
-  iconSize: [28,28],
-  iconAnchor: [14,14],
-  popupAnchor: [0,-14]
-});
-
-// apply to markers
-L.marker([42.3314, -83.0458], { icon: speakerIcon }).addTo(map)
-  .bindPopup('<strong>Detroit, MI</strong>').openPopup();
-
-// Example: replace other markers similarly
-L.marker([42.3280226, -83.0448932], {icon: speakerIcon}).addTo(map).bindPopup("<b><center>Hart Plaza</center></b>Hart Plaza :)");
-L.marker([42.3630469, -83.0852008], {icon: speakerIcon}).addTo(map).bindPopup("<b><center>Marble Bar</center></b>Marble Bar :)");
-L.marker([42.3580524, -83.0167091], {icon: speakerIcon}).addTo(map).bindPopup("<b><center>Spot Lite</center></b>Spot Lite :)");
-L.marker([42.3726414, -83.0635704], {icon: speakerIcon}).addTo(map).bindPopup("<b><center>Tangent Gallery and Hasting Street Ballroom</center></b>Tangent Gallery and Hasting Street Ballroom :)");
-L.marker([42.3380472, -83.0625672], {icon: speakerIcon}).addTo(map).bindPopup("<b><center>T+V Lounge</center></b>T+V Lounge :)");
-L.marker([42.3336153, -83.0548439], {icon: speakerIcon}).addTo(map).bindPopup("<b><center>City Club</center></b>Leland City Club :)");
-L.marker([42.3626399, -83.0819244], {icon: speakerIcon}).addTo(map).bindPopup("<b><center>LNCLN FCTRY</center></b>The Lincoln Factory :)");
-L.marker([42.3311594, -83.0730077], {icon: speakerIcon}).addTo(map).bindPopup("<b><center>MCW</center></b>Motor City Wine :)");
-L.marker([42.3338199, -83.0499098], {icon: speakerIcon}).addTo(map).bindPopup("<b><center>SPKR BOX</center></b>SPKRBOX :)");
-L.marker([42.3668187, -83.0767079], {icon: speakerIcon}).addTo(map).bindPopup("<b><center>NORTHERN LIGHTS </center></b>Northern Lights Lounge :)");
-
-// add default marker, keep reference
-var defaultMarker = L.marker([42.3314, -83.0458]).addTo(map).bindPopup('<strong>Detroit, MI</strong>');
-// remove the default blue marker
-map.removeLayer(defaultMarker);
 </script>
 </body>
 </html>
