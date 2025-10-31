@@ -2,6 +2,8 @@
 <html>
 <head>
     <!--Bootstrap framework-->
+    <!-- Bootstrap CSS (needed for modal styling) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
     <!--Leaflet CSS (latest)-->
@@ -15,11 +17,65 @@
 html { height: 100% }
 body { height: 100%; margin: 0; padding: 0; }
 .map { height: 100% }
+
+/* floating nav button */
+.nav-btn {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 1000; /* above the map */
+}
   </style>
 
 </head>
 <body>
 <div id="map" class="map"></div>
+
+<!-- floating nav button (Bootstrap) -->
+<button type="button" class="btn btn-primary nav-btn" data-bs-toggle="modal" data-bs-target="#navModal">
+  Menu
+</button>
+
+<!-- Nav modal -->
+<div class="modal fade" id="navModal" tabindex="-1" aria-labelledby="navModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="navModalLabel">Delectroit — Navigation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <nav class="nav flex-column">
+          <a class="nav-link" href="#" id="zoom-detroit">Zoom to Detroit</a>
+          <a class="nav-link" href="#" id="fit-markers">Fit all markers</a>
+          <a class="nav-link" href="#" id="about-link">About</a>
+        </nav>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Startup modal that appears on page load - edit the content below -->
+<div class="modal fade" id="startupModal" tabindex="-1" aria-labelledby="startupModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="startupModalLabel">Welcome to Delectroit</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Edit this text to change what appears on load -->
+        <p>Hello — this is a short info box. Add any text or HTML here to show when the page loads.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 // center on Detroit, MI
@@ -68,7 +124,60 @@ marker.bindPopup("<b><center>SPKR BOX</center></b>SPKRBOX :).");
 var marker = L.marker([42.3668187, -83.0767079]).addTo(map);
 marker.bindPopup("<b><center>NORTHERN LIGHTS </center></b>Northern Lights Lounge :).");
 
-</script>
+// collect all markers into a layer group for "fit" action
+var allMarkers = L.featureGroup();
+map.eachLayer(function(layer){
+  if (layer instanceof L.Marker) allMarkers.addLayer(layer);
+});
 
+// Modal actions
+document.getElementById('zoom-detroit').addEventListener('click', function(e){
+  e.preventDefault();
+  map.setView([42.3314, -83.0458], 13);
+  // close modal via Bootstrap API
+  var modalEl = document.getElementById('navModal');
+  var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+  modal.hide();
+});
+
+document.getElementById('fit-markers').addEventListener('click', function(e){
+  e.preventDefault();
+  if (allMarkers.getLayers().length) map.fitBounds(allMarkers.getBounds().pad(0.1));
+  var modalEl = document.getElementById('navModal');
+  var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+  modal.hide();
+});
+
+document.getElementById('about-link').addEventListener('click', function(e){
+  e.preventDefault();
+  alert('Delectroit — mapping project'); // replace with nicer UI as needed
+});
+
+// Optional: add a small Leaflet control button that opens the same modal
+var NavControl = L.Control.extend({
+  onAdd: function(map){
+    var btn = L.DomUtil.create('button', 'btn btn-sm btn-primary');
+    btn.innerHTML = 'Menu';
+    btn.style.margin = '6px';
+    btn.onclick = function(){
+      var modalEl = document.getElementById('navModal');
+      var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+      modal.show();
+    };
+    return btn;
+  },
+  onRemove: function(map){}
+});
+(new NavControl({ position: 'topright' })).addTo(map);
+
+// show startup modal on page load
+document.addEventListener('DOMContentLoaded', function(){
+  var modalEl = document.getElementById('startupModal');
+  if (modalEl) {
+    var modal = new bootstrap.Modal(modalEl);
+    modal.show();
+  }
+});
+</script>
 </body>
 </html>
