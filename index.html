@@ -94,6 +94,17 @@ L.marker([42.3314, -83.0458]).addTo(map)
 setTimeout(function(){ map.invalidateSize(); }, 200);
 window.addEventListener('resize', function(){ map.invalidateSize(); });
 
+//Icon
+var myIcon = L.icon({
+    iconUrl: 'my-icon.png',
+    iconSize: [38, 95],
+    iconAnchor: [22, 94],
+    popupAnchor: [-3, -76],
+    shadowUrl: 'my-icon-shadow.png',
+    shadowSize: [68, 95],
+    shadowAnchor: [22, 94]
+});
+
 var marker = L.marker([42.3280226, -83.0448932]).addTo(map);
 marker.bindPopup("<b><center>Hart Plaza</center></b>Hart Plaza :).");
 
