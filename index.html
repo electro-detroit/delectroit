@@ -171,36 +171,114 @@ const speakerIcon = L.divIcon({
 
 // apply to markers
 L.marker([42.3314, -83.0458], { icon: speakerIcon }).addTo(map)
-  .bindPopup('<div><img src="images/detroit.jpg" alt="Detroit skyline" class="popup-img"><strong>Detroit, MI</strong></div>').openPopup();
+  .bindPopup(`<div><img src="images/detroit.jpg" alt="Detroit skyline" class="popup-img"><div class="popup-center"><strong>Detroit, MI</strong></div>
+    <ul>
+      <li><strong>Name:</strong> Leland City Club</li>
+      <li><strong>Address:</strong><br />400 Bagley St, Detroit, MI 48226, USA</li>
+      <li><strong>Google Maps:</strong> <a href="https://www.google.com/maps/search/?api=1&query=400+Bagley+St+Detroit+MI+48226" target="_blank" rel="noopener">Open in Google Maps</a></li>
+      <li><strong>Citation:</strong> Leland City Club</li>
+    </ul>
+  </div>`).openPopup();
 
 L.marker([42.3280226, -83.0448932], {icon: speakerIcon}).addTo(map)
- .bindPopup('<div><img src="Assets/Hart_Plaza_Detroit.jpg" alt="Hart Plaza" class="popup-img"><b><div style="text-align:center">Hart Plaza</div></b><div>This is the Hart Plaza. It is really cool. Add more text here!</div></div>');
-L.marker([42.3630469, -83.0852008], {icon: speakerIcon}).addTo(map)
-  .bindPopup('<div><img src="images/marble_bar.jpg" alt="Marble Bar" class="popup-img"><b><div class="popup-center">Marble Bar</div></b><div>Marble Bar :)</div></div>');
-L.marker([42.3580524, -83.0167091], {icon: speakerIcon}).addTo(map)
-  .bindPopup('<div><img src="Assets/Spot Lite.jpg" alt="Spot Lite" class="popup-img"><b><center>Spot Lite</center></b><div>Spot Lite :)</div></div>');
-L.marker([42.3726414, -83.0635704], {icon: speakerIcon}).addTo(map)
-  .bindPopup('<div><img src="images/tangent_gallery.jpg" alt="Tangent Gallery and Hastings Street Ballroom" class="popup-img"><b><center>Tangent Gallery and Hasting Street Ballroom</center></b><div>Tangent Gallery and Hasting Street Ballroom :)</div></div>');
-L.marker([42.3380472, -83.0625672], {icon: speakerIcon}).addTo(map)
-  .bindPopup('<div><img src="images/tv_lounge.jpg" alt="T+V Lounge" class="popup-img"><b><center>T+V Lounge</center></b><div>T+V Lounge :)</div></div>');
-L.marker([42.3336153, -83.0548439], {icon: speakerIcon}).addTo(map)
-  .bindPopup(`<div><img src="images/city_club.jpg" alt="City Club" class="popup-img"><div class="popup-center"><strong>City Club</strong></div><div>Add Narrative (1983)
-<ul>
-<li><strong>Name:</strong> Leland City Club</li>
-<li><strong>Address:</strong><br />400 Bagley St, Detroit, MI 48226, USA</li>
-<li><strong>Website:</strong> <a href="https://lelandcityclub.net/" target="_blank" rel="noopener">Leland City Club</a></li>
-</ul>
-</div></div>`);
-L.marker([42.3626399, -83.0819244], {icon: speakerIcon}).addTo(map)
-  .bindPopup('<div><img src="images/lncln_fctry.jpg" alt="LNCLN FCTRY" class="popup-img"><b><center>LNCLN FCTRY</center></b><div>The Lincoln Factory :)</div></div>');
-L.marker([42.3311594, -83.0730077], {icon: speakerIcon}).addTo(map)
-  .bindPopup('<div><img src="images/mcw.jpg" alt="Motor City Wine" class="popup-img"><b><center>MCW</center></b><div>Motor City Wine :)</div></div>');
-L.marker([42.3338199, -83.0499098], {icon: speakerIcon}).addTo(map)
-  .bindPopup('<div><img src="images/spkr_box.jpg" alt="SPKR BOX" class="popup-img"><b><center>SPKR BOX</center></b><div>SPKRBOX :)</div></div>');
-L.marker([42.3668187, -83.0767079], {icon: speakerIcon}).addTo(map)
-  .bindPopup('<div><img src="images/northern_lights.jpg" alt="Northern Lights Lounge" class="popup-img"><b><center>NORTHERN LIGHTS</center></b><div>Northern Lights Lounge :)</div></div>');
+ .bindPopup(`<div><img src="Assets/Hart_Plaza_Detroit.jpg" alt="Hart Plaza" class="popup-img"><div class="popup-center"><strong>Hart Plaza</strong></div><div>Created: 1975</div>
+    <ul>
+      <li><strong>Name:</strong> Hart Plaza</li>
+      <li><strong>Address:</strong><br />1 Hart Plaza, Detroit, MI 48226, USA</li>
+      <li><strong>Google Maps:</strong> <a href="https://www.google.com/maps/search/?api=1&query=1+Hart+Plaza+Detroit+MI+48226" target="_blank" rel="noopener">Open in Google Maps</a></li>
+      <li><strong>Citation:</strong> Hart Plaza | Detroit Historical Society</li>
+    </ul>
+  </div>`);
 
-<!-- Harry add your five locations here --> 
+L.marker([42.3630469, -83.0852008], {icon: speakerIcon}).addTo(map)
+  .bindPopup(`<div><img src="images/marble_bar.jpg" alt="Marble Bar" class="popup-img"><div class="popup-center"><strong>Marble Bar</strong></div><div>Created: 2015</div>
+    <ul>
+      <li><strong>Name:</strong> Marble Bar</li>
+      <li><strong>Address:</strong><br />1501 Holden St, Detroit, MI 48208, USA</li>
+      <li><strong>Google Maps:</strong> <a href="https://www.google.com/maps/search/?api=1&query=1501+Holden+St+Detroit+MI+48208" target="_blank" rel="noopener">Open in Google Maps</a></li>
+      <li><strong>Citation:</strong> Marble Bar opens in Detroit’s New Center area</li>
+    </ul>
+  </div>`);
+
+L.marker([42.3580524, -83.0167091], {icon: speakerIcon}).addTo(map)
+  .bindPopup(`<div><img src="Assets/Spot Lite.jpg" alt="Spot Lite" class="popup-img"><div class="popup-center"><strong>Spot Lite Detroit</strong></div><div>Created: 2021</div>
+    <ul>
+      <li><strong>Name:</strong> Spot Lite Detroit</li>
+      <li><strong>Address:</strong><br />2905 Beaufait St, Detroit, MI 48207, USA</li>
+      <li><strong>Google Maps:</strong> <a href="https://www.google.com/maps/search/?api=1&query=2905+Beaufait+St+Detroit+MI+48207" target="_blank" rel="noopener">Open in Google Maps</a></li>
+      <li><strong>Citation:</strong> Spot Lite Detroit - Michigan Women Forward; Motor City Match awardee Spot Lite Detroit opens in Detroit's east side</li>
+    </ul>
+  </div>`);
+
+L.marker([42.3726414, -83.0635704], {icon: speakerIcon}).addTo(map)
+  .bindPopup(`<div><img src="images/tangent_gallery.jpg" alt="Tangent Gallery and Hastings Street Ballroom" class="popup-img"><div class="popup-center"><strong>Tangent Gallery &amp; Hastings Street Ballroom</strong></div><div>Created: 1999</div>
+    <ul>
+      <li><strong>Name:</strong> Tangent Gallery &amp; Hastings Street Ballroom</li>
+      <li><strong>Address:</strong><br />715 Milwaukee Ave, Detroit, MI 48202, USA</li>
+      <li><strong>Google Maps:</strong> <a href="https://www.google.com/maps/search/?api=1&query=715+Milwaukee+Ave+Detroit+MI+48202" target="_blank" rel="noopener">Open in Google Maps</a></li>
+      <li><strong>Citation:</strong> Tangent Gallery, Detroit · Upcoming Events &amp; Tickets; Tangent Gallery | Party Pro Toolkit</li>
+    </ul>
+  </div>`);
+
+L.marker([42.3380472, -83.0625672], {icon: speakerIcon}).addTo(map)
+  .bindPopup(`<div><img src="images/tv_lounge.jpg" alt="TV Lounge" class="popup-img"><div class="popup-center"><strong>TV Lounge</strong></div><div>Created: 2007</div>
+    <ul>
+      <li><strong>Name:</strong> TV Lounge</li>
+      <li><strong>Address:</strong><br />2548 Grand River Ave, Detroit, MI 48201, USA</li>
+      <li><strong>Google Maps:</strong> <a href="https://www.google.com/maps/search/?api=1&query=2548+Grand+River+Ave+Detroit+MI+48201" target="_blank" rel="noopener">Open in Google Maps</a></li>
+      <li><strong>Citation:</strong> TV Lounge; In fickle world of dance music clubs, TV Lounge thrives on</li>
+    </ul>
+  </div>`);
+
+L.marker([42.3336153, -83.0548439], {icon: speakerIcon}).addTo(map)
+  .bindPopup(`<div><img src="images/city_club.jpg" alt="Leland City Club" class="popup-img"><div class="popup-center"><strong>Leland City Club</strong></div><div>Created: 1983</div>
+    <ul>
+      <li><strong>Name:</strong> Leland City Club</li>
+      <li><strong>Address:</strong><br />400 Bagley St, Detroit, MI 48226, USA</li>
+      <li><strong>Google Maps:</strong> <a href="https://www.google.com/maps/search/?api=1&query=400+Bagley+St+Detroit+MI+48226" target="_blank" rel="noopener">Open in Google Maps</a></li>
+      <li><strong>Citation:</strong> Leland City Club</li>
+    </ul>
+  </div>`);
+
+L.marker([42.3626399, -83.0819244], {icon: speakerIcon}).addTo(map)
+  .bindPopup(`<div><img src="images/lncln_fctry.jpg" alt="The Lincoln Factory" class="popup-img"><div class="popup-center"><strong>The Lincoln Factory</strong></div><div>Created: 1908</div>
+    <ul>
+      <li><strong>Name:</strong> The Lincoln Factory</li>
+      <li><strong>Address:</strong><br />1240 Holden St, Detroit, MI 48202, USA</li>
+      <li><strong>Google Maps:</strong> <a href="https://www.google.com/maps/search/?api=1&query=1240+Holden+St+Detroit+MI+48202" target="_blank" rel="noopener">Open in Google Maps</a></li>
+      <li><strong>Citation:</strong> Lincoln Factory</li>
+    </ul>
+  </div>`);
+
+L.marker([42.3311594, -83.0730077], {icon: speakerIcon}).addTo(map)
+  .bindPopup(`<div><img src="images/mcw.jpg" alt="Motor City Wine" class="popup-img"><div class="popup-center"><strong>Motor City Wine</strong></div><div>Created: (date n/a)</div>
+    <ul>
+      <li><strong>Name:</strong> Motor City Wine</li>
+      <li><strong>Address:</strong><br />1949 Michigan Ave, Detroit, MI 48216, USA</li>
+      <li><strong>Google Maps:</strong> <a href="https://www.google.com/maps/search/?api=1&query=1949+Michigan+Ave+Detroit+MI+48216" target="_blank" rel="noopener">Open in Google Maps</a></li>
+      <li><strong>Citation:</strong> MotorCity Wine</li>
+    </ul>
+  </div>`);
+
+L.marker([42.3338199, -83.0499098], {icon: speakerIcon}).addTo(map)
+  .bindPopup(`<div><img src="images/spkr_box.jpg" alt="SPKR BOX" class="popup-img"><div class="popup-center"><strong>SPKRBOX</strong></div><div>Created: 2022</div>
+    <ul>
+      <li><strong>Name:</strong> SPKRBOX</li>
+      <li><strong>Address:</strong><br />1501 Holden St, Detroit, MI 48208, USA</li>
+      <li><strong>Google Maps:</strong> <a href="https://www.google.com/maps/search/?api=1&query=1501+Holden+St+Detroit+MI+48208" target="_blank" rel="noopener">Open in Google Maps</a></li>
+      <li><strong>Citation:</strong> SPKRBOX Detroit</li>
+    </ul>
+  </div>`);
+
+L.marker([42.3668187, -83.0767079], {icon: speakerIcon}).addTo(map)
+  .bindPopup(`<div><img src="images/northern_lights.jpg" alt="Northern Lights Lounge" class="popup-img"><div class="popup-center"><strong>Northern Lights Lounge</strong></div><div>Created: 2004</div>
+    <ul>
+      <li><strong>Name:</strong> Northern Lights Lounge</li>
+      <li><strong>Address:</strong><br />660 W Baltimore Ave, Detroit, MI 48202, USA</li>
+      <li><strong>Google Maps:</strong> <a href="https://www.google.com/maps/search/?api=1&query=660+W+Baltimore+Ave+Detroit+MI+48202" target="_blank" rel="noopener">Open in Google Maps</a></li>
+      <li><strong>Citation:</strong> Northern Lights Lounge - Detroit</li>
+    </ul>
+  </div>`);
 
 // collect all markers into a layer group for "fit" action (moved here so it picks up the speakerIcon markers)
 var allMarkers = L.featureGroup();
