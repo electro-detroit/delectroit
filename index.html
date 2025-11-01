@@ -118,12 +118,12 @@
 
           <div class="btn-group ms-2" role="group" aria-label="Nav controls" style="align-self:flex-start;">
             <button type="button" class="btn btn-sm btn-light" title="Zoom to Detroit"
-              onclick="(function(){ if(window.map) window.map.setView([42.3314,-83.0458],13); var modalEl=document.getElementById('navModal'); bootstrap.Modal.getInstance(modalEl)?.hide(); })()">
+              onclick="(function(){ if(window.map) window.map.setView([42.3314,-83.0458],13); var modalEl=document.getElementById('navModal'); var modalInstance = bootstrap.Modal.getInstance(modalEl); if (modalInstance) modalInstance.hide(); })()">
               <i class="bi bi-geo-alt-fill"></i>
             </button>
 
             <button type="button" class="btn btn-sm btn-light" title="Show project description"
-              onclick="(function(){ var modal=document.getElementById('navModal'); var body=modal.querySelector('.modal-body'); body.innerHTML = '<p class=&quot;mb-2&quot;><strong>Delectroit:</strong> Interactive map of Detroit sound-art venues and installations. Click markers for details.</p><p class=&quot;mb-0&quot;>Tip: Use the \"Fit markers\" action to view all locations.</p>'; })()">
+              onclick="(function(){ var modal=document.getElementById('navModal'); var body=modal.querySelector('.modal-body'); body.innerHTML = '<p class=&quot;mb-2&quot;><strong>Delectroit:</strong> Interactive map of Detroit sound-art venues and installations. Click markers for details.</p><p class=&quot;mb-0&quot;>Tip: Use the &quot;Fit markers&quot; action to view all locations.</p>'; })()">
               <i class="bi bi-info-circle-fill"></i>
             </button>
 
@@ -148,25 +148,137 @@
     </div>
   </div>
 </div>
-
 <!-- Startup modal that appears on page load - edit the content below -->
+<style>
+  /* local styles for the startup modal */
+  #startupModal .modal-header {
+    background: linear-gradient(90deg,#9775d7,#7d51a1);
+    color: #fff;
+    border-bottom: none;
+    align-items:center;
+  }
+  #startupModal .modal-title {
+    margin:0;
+    font-weight:600;
+  }
+  #startupModal .startup-badge {
+    width:44px;
+    height:44px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    background: rgba(255,255,255,0.12);
+    border-radius:8px;
+    margin-right:10px;
+    font-size:20px;
+  }
+  #startupModal .modal-body { font-size:14px; color:#2b0b4d; }
+  #startupModal .tip { font-weight:500; margin-bottom:8px; }
+  #startupModal .small-muted { opacity:0.85; font-size:13px; }
+  #startupModal .dont-show { display:flex; align-items:center; gap:8px; }
+  #startupModal img.startup-img { width:100%; max-height:120px; object-fit:cover; border-radius:6px; display:block; margin-bottom:8px; }
+  #startupModal .modal-footer { display:flex; gap:8px; justify-content:space-between; align-items:center; flex-wrap:wrap; }
+  @media (min-width:560px){
+    #startupModal .modal-body-flex { display:flex; gap:12px; }
+    #startupModal .text-col { flex:1; }
+    #startupModal .img-col { width:160px; flex:0 0 160px; }
+  }
+</style>
+
 <div class="modal fade" id="startupModal" tabindex="-1" aria-labelledby="startupModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="startupModalLabel">Welcome to Delectroit</h5>
+        <div style="display:flex; align-items:center; gap:10px; width:100%;">
+          <div class="startup-badge" aria-hidden="true">
+            <i class="bi bi-speaker-fill" style="color:#fff;"></i>
+          </div>
+          <div style="flex:1;">
+            <h5 class="modal-title" id="startupModalLabel">Welcome to Delectroit</h5>
+            <small class="small-muted">Explore sound art & venues across Detroit.</small>
+          </div>
+        </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+
       <div class="modal-body">
-        <!-- Edit this text to change what appears on load -->
-        <p>Hello — this is a short info box. Add any text or HTML here to show when the page loads.</p>
+        <div class="modal-body-flex">
+          <div class="text-col">
+            <!-- startup tip removed -->
+            <div class="small-muted">
+              Click markers for details, or use the Menu (top-left) to zoom and fit markers.
+            </div>
+
+            <div style="margin-top:12px;" class="dont-show">
+              <input type="checkbox" id="dontShow" />
+              <label for="dontShow" style="margin:0; font-size:13px;">Don't show this again</label>
+            </div>
+          </div>
+
+          <!-- image removed -->
+        </div>
       </div>
+
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <div style="display:flex; gap:8px;">
+          <button id="exploreBtn" type="button" class="btn btn-sm btn-primary">Explore map</button>
+          <button type="button" class="btn btn-sm btn-outline-light" data-bs-dismiss="modal">Close</button>
+        </div>
+        <small class="small-muted">v1 • Delectroit (BHY)</small>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+(function(){
+  var modalEl = document.getElementById('startupModal');
+  if (!modalEl) return;
+
+  var tips = [
+    'Tip: Use "Fit markers" in the Menu to view all locations at once.',
+    'Tip: Click a speaker icon to see photos, addresses and more.',
+    'Tip: On mobile, drag the map with one finger — markers are touch-enabled.'
+  ];
+  var tipIndex = 0;
+  function showTip(){
+    var el = document.getElementById('startupTip');
+    if (!el) return;
+    el.textContent = tips[tipIndex];
+    tipIndex = (tipIndex + 1) % tips.length;
+  }
+  showTip();
+  var tipInterval = setInterval(showTip, 4000);
+
+  // "Don't show again" handling: save to localStorage and remove modal before other handlers run
+  var dont = modalEl.querySelector('#dontShow');
+  dont.addEventListener('change', function(){
+    try {
+      if (dont.checked) localStorage.setItem('hideStartupModal','true');
+      else localStorage.removeItem('hideStartupModal');
+    } catch(e){}
+  });
+
+  // "Explore map" button: zoom to Detroit and close
+  var exploreBtn = modalEl.querySelector('#exploreBtn');
+  exploreBtn.addEventListener('click', function(){
+    if (window.map && typeof map.setView === 'function') map.setView([42.3314,-83.0458],13);
+    var modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+    modalInstance.hide();
+  });
+
+  // On DOMContentLoaded, if user asked not to show again, remove the modal element so other startup handlers won't display it
+  document.addEventListener('DOMContentLoaded', function(){
+    try {
+      if (localStorage.getItem('hideStartupModal') === 'true') {
+        // remove element and clear interval
+        modalEl.parentNode && modalEl.parentNode.removeChild(modalEl);
+        clearInterval(tipInterval);
+      }
+    } catch(e){}
+  });
+})();
+</script>
 
 <script>
 // center on Detroit, MI
