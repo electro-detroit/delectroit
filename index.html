@@ -106,7 +106,33 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="navModalLabel">Delectroit — Navigation</h5>
+        <div style="width:100%; display:flex; align-items:center; gap:12px;">
+          <div style="flex:1; background:linear-gradient(90deg,#6f42c1,#8e44cc); color:#fff; padding:10px 14px; border-radius:6px;">
+            <h5 class="modal-title mb-0" id="navModalLabel">Delectroit — Navigation</h5>
+            <small id="navModalSub" class="d-block" style="opacity:.9;">Quick actions & map controls</small>
+            <p class="mb-0 mt-2" style="font-size:13px; line-height:1.3; opacity:0.95;">
+              Welcome to Delectroit, a mapping project showcasing Detroit's vibrant sound art scene. Explore the locations of various sound installations and venues across the city.
+              <br><strong>Created:</strong> 2021 ADD DESCRIPTION
+            </p>
+          </div>
+
+          <div class="btn-group ms-2" role="group" aria-label="Nav controls" style="align-self:flex-start;">
+            <button type="button" class="btn btn-sm btn-light" title="Zoom to Detroit"
+              onclick="(function(){ if(window.map) window.map.setView([42.3314,-83.0458],13); var modalEl=document.getElementById('navModal'); bootstrap.Modal.getInstance(modalEl)?.hide(); })()">
+              <i class="bi bi-geo-alt-fill"></i>
+            </button>
+
+            <button type="button" class="btn btn-sm btn-light" title="Show project description"
+              onclick="(function(){ var modal=document.getElementById('navModal'); var body=modal.querySelector('.modal-body'); body.innerHTML = '<p class=&quot;mb-2&quot;><strong>Delectroit:</strong> Interactive map of Detroit sound-art venues and installations. Click markers for details.</p><p class=&quot;mb-0&quot;>Tip: Use the \"Fit markers\" action to view all locations.</p>'; })()">
+              <i class="bi bi-info-circle-fill"></i>
+            </button>
+
+            <button type="button" class="btn btn-sm btn-outline-light" title="Toggle purple header help"
+              onclick="(function(btn){ var sub=document.getElementById('navModalSub'); sub.textContent = sub.textContent.startsWith('Quick') ? 'Use the icons to quickly control the map.' : 'Quick actions & map controls'; })(this)">
+              <i class="bi bi-sliders"></i>
+            </button>
+          </div>
+        </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -172,111 +198,97 @@ const speakerIcon = L.divIcon({
 // apply to markers
 L.marker([42.3314, -83.0458], { icon: speakerIcon }).addTo(map)
   .bindPopup(`<div><img src="images/detroit.jpg" alt="Detroit skyline" class="popup-img"><div class="popup-center"><strong>Detroit, MI</strong></div>
-    <ul>
-      <li><strong>Name:</strong> Leland City Club</li>
-      <li><strong>Address:</strong><br />400 Bagley St, Detroit, MI 48226, USA</li>
-      <li><strong>Google Maps:</strong> <a href="https://www.google.com/maps/search/?api=1&query=400+Bagley+St+Detroit+MI+48226" target="_blank" rel="noopener">Open in Google Maps</a></li>
-      <li><strong>Citation:</strong> Leland City Club</li>
-    </ul>
+    <div><p>Welcome to Delectroit, a mapping project showcasing Detroit's vibrant sound art scene. Explore the locations of various sound installations and venues across the city.</p>
+    </div><p>Created: 2021 ADD DESCRIPTION</p>
   </div>`).openPopup();
 
 L.marker([42.3280226, -83.0448932], {icon: speakerIcon}).addTo(map)
- .bindPopup(`<div><img src="Assets/Hart_Plaza_Detroit.jpg" alt="Hart Plaza" class="popup-img"><div class="popup-center"><strong>Hart Plaza</strong></div><div>Created: 1975</div>
+ .bindPopup(`<div><img src="Assets/Hart_Plaza_Detroit.jpg" alt="Hart Plaza" class="popup-img"><div class="popup-center"><strong>Hart Plaza</strong></div><div><P>Created: 1975 ADD DESCRIPTION</div>
     <ul>
       <li><strong>Name:</strong> Hart Plaza</li>
       <li><strong>Address:</strong><br />1 Hart Plaza, Detroit, MI 48226, USA</li>
-      <li><strong>Google Maps:</strong> <a href="https://www.google.com/maps/search/?api=1&query=1+Hart+Plaza+Detroit+MI+48226" target="_blank" rel="noopener">Open in Google Maps</a></li>
-      <li><strong>Citation:</strong> Hart Plaza | Detroit Historical Society</li>
+      <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
     </ul>
   </div>`);
 
 L.marker([42.3630469, -83.0852008], {icon: speakerIcon}).addTo(map)
-  .bindPopup(`<div><img src="images/marble_bar.jpg" alt="Marble Bar" class="popup-img"><div class="popup-center"><strong>Marble Bar</strong></div><div>Created: 2015</div>
+  .bindPopup(`<div><img src="images/marble_bar.jpg" alt="Marble Bar" class="popup-img"><div class="popup-center"><strong>Marble Bar</strong></div><div><P>Created: 2015 ADD DESCRIPTION</div>
     <ul>
       <li><strong>Name:</strong> Marble Bar</li>
       <li><strong>Address:</strong><br />1501 Holden St, Detroit, MI 48208, USA</li>
-      <li><strong>Google Maps:</strong> <a href="https://www.google.com/maps/search/?api=1&query=1501+Holden+St+Detroit+MI+48208" target="_blank" rel="noopener">Open in Google Maps</a></li>
-      <li><strong>Citation:</strong> Marble Bar opens in Detroit’s New Center area</li>
+      <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
     </ul>
   </div>`);
 
 L.marker([42.3580524, -83.0167091], {icon: speakerIcon}).addTo(map)
-  .bindPopup(`<div><img src="Assets/Spot Lite.jpg" alt="Spot Lite" class="popup-img"><div class="popup-center"><strong>Spot Lite Detroit</strong></div><div>Created: 2021</div>
+  .bindPopup(`<div><img src="Assets/Spot Lite.jpg" alt="Spot Lite" class="popup-img"><div class="popup-center"><strong>Spot Lite Detroit</strong></div><div><P>Created: 2021 ADD DESCRIPTION</div>
     <ul>
       <li><strong>Name:</strong> Spot Lite Detroit</li>
       <li><strong>Address:</strong><br />2905 Beaufait St, Detroit, MI 48207, USA</li>
-      <li><strong>Google Maps:</strong> <a href="https://www.google.com/maps/search/?api=1&query=2905+Beaufait+St+Detroit+MI+48207" target="_blank" rel="noopener">Open in Google Maps</a></li>
-      <li><strong>Citation:</strong> Spot Lite Detroit - Michigan Women Forward; Motor City Match awardee Spot Lite Detroit opens in Detroit's east side</li>
+      <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
     </ul>
   </div>`);
 
 L.marker([42.3726414, -83.0635704], {icon: speakerIcon}).addTo(map)
-  .bindPopup(`<div><img src="images/tangent_gallery.jpg" alt="Tangent Gallery and Hastings Street Ballroom" class="popup-img"><div class="popup-center"><strong>Tangent Gallery &amp; Hastings Street Ballroom</strong></div><div>Created: 1999</div>
+  .bindPopup(`<div><img src="images/tangent_gallery.jpg" alt="Tangent Gallery and Hastings Street Ballroom" class="popup-img"><div class="popup-center"><strong>Tangent Gallery &amp; Hastings Street Ballroom</strong></div><div><P>Created: 1999 ADD DESCRIPTION</div>
     <ul>
       <li><strong>Name:</strong> Tangent Gallery &amp; Hastings Street Ballroom</li>
       <li><strong>Address:</strong><br />715 Milwaukee Ave, Detroit, MI 48202, USA</li>
-      <li><strong>Google Maps:</strong> <a href="https://www.google.com/maps/search/?api=1&query=715+Milwaukee+Ave+Detroit+MI+48202" target="_blank" rel="noopener">Open in Google Maps</a></li>
-      <li><strong>Citation:</strong> Tangent Gallery, Detroit · Upcoming Events &amp; Tickets; Tangent Gallery | Party Pro Toolkit</li>
+      <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
     </ul>
   </div>`);
 
 L.marker([42.3380472, -83.0625672], {icon: speakerIcon}).addTo(map)
-  .bindPopup(`<div><img src="images/tv_lounge.jpg" alt="TV Lounge" class="popup-img"><div class="popup-center"><strong>TV Lounge</strong></div><div>Created: 2007</div>
+  .bindPopup(`<div><img src="images/tv_lounge.jpg" alt="TV Lounge" class="popup-img"><div class="popup-center"><strong>TV Lounge</strong></div><div><P>Created: 2007 ADD DESCRIPTION</div>
     <ul>
       <li><strong>Name:</strong> TV Lounge</li>
       <li><strong>Address:</strong><br />2548 Grand River Ave, Detroit, MI 48201, USA</li>
-      <li><strong>Google Maps:</strong> <a href="https://www.google.com/maps/search/?api=1&query=2548+Grand+River+Ave+Detroit+MI+48201" target="_blank" rel="noopener">Open in Google Maps</a></li>
-      <li><strong>Citation:</strong> TV Lounge; In fickle world of dance music clubs, TV Lounge thrives on</li>
+      <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
     </ul>
   </div>`);
 
 L.marker([42.3336153, -83.0548439], {icon: speakerIcon}).addTo(map)
-  .bindPopup(`<div><img src="images/city_club.jpg" alt="Leland City Club" class="popup-img"><div class="popup-center"><strong>Leland City Club</strong></div><div>Created: 1983</div>
+  .bindPopup(`<div><img src="images/city_club.jpg" alt="Leland City Club" class="popup-img"><div class="popup-center"><strong>Leland City Club</strong></div><div><P>Created: 1983 ADD DESCRIPTION</div>
     <ul>
       <li><strong>Name:</strong> Leland City Club</li>
       <li><strong>Address:</strong><br />400 Bagley St, Detroit, MI 48226, USA</li>
-      <li><strong>Google Maps:</strong> <a href="https://www.google.com/maps/search/?api=1&query=400+Bagley+St+Detroit+MI+48226" target="_blank" rel="noopener">Open in Google Maps</a></li>
-      <li><strong>Citation:</strong> Leland City Club</li>
+      <li><strong>Website:</strong> <a href="https://lelandcityclub.net/" target="_blank" rel="noopener">Leland City Club</a></li>
     </ul>
   </div>`);
 
 L.marker([42.3626399, -83.0819244], {icon: speakerIcon}).addTo(map)
-  .bindPopup(`<div><img src="images/lncln_fctry.jpg" alt="The Lincoln Factory" class="popup-img"><div class="popup-center"><strong>The Lincoln Factory</strong></div><div>Created: 1908</div>
+  .bindPopup(`<div><img src="images/lncln_fctry.jpg" alt="The Lincoln Factory" class="popup-img"><div class="popup-center"><strong>The Lincoln Factory</strong></div><div><P>Created: 1908 ADD DESCRIPTION</div>
     <ul>
       <li><strong>Name:</strong> The Lincoln Factory</li>
       <li><strong>Address:</strong><br />1240 Holden St, Detroit, MI 48202, USA</li>
-      <li><strong>Google Maps:</strong> <a href="https://www.google.com/maps/search/?api=1&query=1240+Holden+St+Detroit+MI+48202" target="_blank" rel="noopener">Open in Google Maps</a></li>
-      <li><strong>Citation:</strong> Lincoln Factory</li>
+      <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
     </ul>
   </div>`);
 
 L.marker([42.3311594, -83.0730077], {icon: speakerIcon}).addTo(map)
-  .bindPopup(`<div><img src="images/mcw.jpg" alt="Motor City Wine" class="popup-img"><div class="popup-center"><strong>Motor City Wine</strong></div><div>Created: (date n/a)</div>
+  .bindPopup(`<div><img src="images/mcw.jpg" alt="Motor City Wine" class="popup-img"><div class="popup-center"><strong>Motor City Wine</strong></div><div><P>Created: (date n/a) ADD DESCRIPTION</div>
     <ul>
       <li><strong>Name:</strong> Motor City Wine</li>
       <li><strong>Address:</strong><br />1949 Michigan Ave, Detroit, MI 48216, USA</li>
-      <li><strong>Google Maps:</strong> <a href="https://www.google.com/maps/search/?api=1&query=1949+Michigan+Ave+Detroit+MI+48216" target="_blank" rel="noopener">Open in Google Maps</a></li>
-      <li><strong>Citation:</strong> MotorCity Wine</li>
+      <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
     </ul>
   </div>`);
 
 L.marker([42.3338199, -83.0499098], {icon: speakerIcon}).addTo(map)
-  .bindPopup(`<div><img src="images/spkr_box.jpg" alt="SPKR BOX" class="popup-img"><div class="popup-center"><strong>SPKRBOX</strong></div><div>Created: 2022</div>
+  .bindPopup(`<div><img src="images/spkr_box.jpg" alt="SPKR BOX" class="popup-img"><div class="popup-center"><strong>SPKRBOX</strong></div><div><P>Created: 2022 ADD DESCRIPTION</div>
     <ul>
       <li><strong>Name:</strong> SPKRBOX</li>
       <li><strong>Address:</strong><br />1501 Holden St, Detroit, MI 48208, USA</li>
-      <li><strong>Google Maps:</strong> <a href="https://www.google.com/maps/search/?api=1&query=1501+Holden+St+Detroit+MI+48208" target="_blank" rel="noopener">Open in Google Maps</a></li>
-      <li><strong>Citation:</strong> SPKRBOX Detroit</li>
+      <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
     </ul>
   </div>`);
 
 L.marker([42.3668187, -83.0767079], {icon: speakerIcon}).addTo(map)
-  .bindPopup(`<div><img src="images/northern_lights.jpg" alt="Northern Lights Lounge" class="popup-img"><div class="popup-center"><strong>Northern Lights Lounge</strong></div><div>Created: 2004</div>
+  .bindPopup(`<div><img src="images/northern_lights.jpg" alt="Northern Lights Lounge" class="popup-img"><div class="popup-center"><strong>Northern Lights Lounge</strong></div><div><P>Created: 2004 ADD DESCRIPTION</div>
     <ul>
       <li><strong>Name:</strong> Northern Lights Lounge</li>
       <li><strong>Address:</strong><br />660 W Baltimore Ave, Detroit, MI 48202, USA</li>
-      <li><strong>Google Maps:</strong> <a href="https://www.google.com/maps/search/?api=1&query=660+W+Baltimore+Ave+Detroit+MI+48202" target="_blank" rel="noopener">Open in Google Maps</a></li>
-      <li><strong>Citation:</strong> Northern Lights Lounge - Detroit</li>
+      <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
     </ul>
   </div>`);
 
