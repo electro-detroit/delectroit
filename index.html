@@ -30,15 +30,40 @@
   <style>
   html { height: 100% }
   body { height: 100%; margin: 0; padding: 0; }
-  .map { height: 100% }
 
-/* floating nav button */
-.nav-btn {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  z-index: 1000; /* above the map */
-}
+  /* reserve space for the fixed navbar (increase to match taller navbar) */
+  body { padding-top: 80px; }
+
+  /* taller purple navbar with centered title */
+  .navbar.fixed-top{
+    background: linear-gradient(90deg,#6f42c1,#8e44cc) !important;
+    height: 80px;
+    box-shadow: 0 6px 18px rgba(111,66,193,0.18);
+  }
+  .navbar .container-fluid { position: relative; }
+
+  /* center the brand/title in the navbar */
+  .navbar-brand {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #fff !important;
+    letter-spacing: 0.4px;
+  }
+
+  /* move the toggler to the right so it doesn't sit left of the centered title */
+  .navbar-toggler {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  /* make the map fit the remaining viewport below the navbar */
+  .map { height: calc(100vh - 80px); }
 
 /* Bootstrap-icon marker styling */
 .bi-marker {
@@ -94,6 +119,31 @@
 
 </head>
 <body>
+
+<!-- Top navigation bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Delectroit</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTop" aria-controls="navbarTop" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarTop">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="#" id="zoom-detroit-top">Zoom to Detroit</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" id="fit-markers-top">Fit markers</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" id="about-top">About</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
 <div id="map" class="map"></div>
 
 <!-- floating nav button (Bootstrap) -->
@@ -235,45 +285,32 @@
   var modalEl = document.getElementById('startupModal');
   if (!modalEl) return;
 
-  var tips = [
-    'Tip: Use "Fit markers" in the Menu to view all locations at once.',
-    'Tip: Click a speaker icon to see photos, addresses and more.',
-    'Tip: On mobile, drag the map with one finger — markers are touch-enabled.'
-  ];
-  var tipIndex = 0;
-  function showTip(){
-    var el = document.getElementById('startupTip');
-    if (!el) return;
-    el.textContent = tips[tipIndex];
-    tipIndex = (tipIndex + 1) % tips.length;
-  }
-  showTip();
-  var tipInterval = setInterval(showTip, 4000);
-
-  // "Don't show again" handling: save to localStorage and remove modal before other handlers run
+  // "Don't show again" handling
   var dont = modalEl.querySelector('#dontShow');
-  dont.addEventListener('change', function(){
-    try {
-      if (dont.checked) localStorage.setItem('hideStartupModal','true');
-      else localStorage.removeItem('hideStartupModal');
-    } catch(e){}
-  });
+  if (dont) {
+    dont.addEventListener('change', function(){
+      try {
+        if (dont.checked) localStorage.setItem('hideStartupModal','true');
+        else localStorage.removeItem('hideStartupModal');
+      } catch(e){}
+    });
+  }
 
   // "Explore map" button: zoom to Detroit and close
   var exploreBtn = modalEl.querySelector('#exploreBtn');
-  exploreBtn.addEventListener('click', function(){
-    if (window.map && typeof map.setView === 'function') map.setView([42.3314,-83.0458],13);
-    var modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-    modalInstance.hide();
-  });
+  if (exploreBtn) {
+    exploreBtn.addEventListener('click', function(){
+      if (window.map && typeof map.setView === 'function') map.setView([42.3314,-83.0458],13);
+      var modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+      modalInstance.hide();
+    });
+  }
 
-  // On DOMContentLoaded, if user asked not to show again, remove the modal element so other startup handlers won't display it
+  // On DOMContentLoaded, if user asked not to show again, remove the modal element so it won't appear
   document.addEventListener('DOMContentLoaded', function(){
     try {
       if (localStorage.getItem('hideStartupModal') === 'true') {
-        // remove element and clear interval
         modalEl.parentNode && modalEl.parentNode.removeChild(modalEl);
-        clearInterval(tipInterval);
       }
     } catch(e){}
   });
