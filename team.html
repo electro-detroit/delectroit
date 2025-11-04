@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Team — Delectroit</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    /* match about.html basic styles */
+    body { padding-top: 80px; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color:#231441; }
+    .navbar.fixed-top { background: linear-gradient(90deg,#6f42c1,#8e44cc); height:80px; box-shadow: 0 6px 18px rgba(111,66,193,0.18); }
+    .navbar-brand { position: absolute; left:50%; top:50%; transform: translate(-50%,-50%); color:#fff; font-weight:700; }
+    .container { max-width: 900px; }
+    .lead { color:#3a1b63; }
+    .member-card { border-radius:10px; border:1px solid #e9dff8; background:#fbf7ff; padding:18px; margin-bottom:16px; display:flex; gap:12px; align-items:center; }
+    .member-avatar { width:72px; height:72px; border-radius:8px; background:#eaddff; display:inline-flex; align-items:center; justify-content:center; font-weight:700; color:#6b3ea8; }
+    .member-meta { flex:1; }
+    .member-role { color:#6f42c1; font-weight:600; margin-bottom:6px; }
+    footer { margin: 28px 0 48px; color:#5a3b83; font-size:13px; text-align:center; }
+    a.btn-back { background:#6f42c1; color:#fff; border:0; }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Delectroit</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navTop" aria-controls="navTop" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navTop">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Map</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link active" href="team.html">Team</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+    <header class="mb-4">
+      <h1 class="h3">Project Team</h1>
+      <p class="lead mb-0">People involved in the Delectroit mapping project.</p>
+    </header>
+
+    <section aria-labelledby="core-team-heading">
+      <h2 id="core-team-heading" class="h5 mb-3">Core team</h2>
+
+      <!-- Alex Lane, Sam Morgan, and R. Lee removed -->
+      <article class="member-card" aria-labelledby="member-4">
+        <div class="member-avatar" aria-hidden="true">BG</div>
+        <div class="member-meta">
+          <div id="member-4" class="h6 mb-0">Bryttany Grimes <small class="text-muted">(she/her)</small></div>
+          <div class="member-role">Researcher — History & gender studies</div>
+          <p class="mb-0">Second‑year PhD student in the Department of History. Bryttany's work centers on Nigeria, gender, Islam, and British colonialism; her current research examines how Hausa women use dress to express internal valuations of womanhood in response to Islam, colonial rule, and Western influence.</p>
+        </div>
+      </article>
+
+      <article class="member-card" aria-labelledby="member-5">
+        <div class="member-avatar" aria-hidden="true">AI</div>
+        <div class="member-meta">
+          <div id="member-5" class="h6 mb-0">Ayaat Ismail <small class="text-muted">(she/her)</small></div>
+          <div class="member-role">Researcher — English & cultural studies</div>
+          <p class="mb-0">English Ph.D. student at Michigan State University focusing on 21st‑century Palestinian cultural production, with particular interest in portrayals of Palestinians in literature and film. Her work examines memory, surveillance, infrastructure, carcerality, and expressions of sumud.</p>
+        </div>
+      </article>
+
+      <article class="member-card" aria-labelledby="member-6">
+        <div class="member-avatar" aria-hidden="true">HF</div>
+        <div class="member-meta">
+          <div id="member-6" class="h6 mb-0">Harry M. Foster <small class="text-muted">(he/him)</small></div>
+          <div class="member-role">Researcher — English & cultural studies</div>
+          <p class="mb-0">PhD student in the Department of English at Michigan State University. He completed his undergraduate degree in English and Creative Writing at Columbia University and served five years in the Marines. His research examines expressions and manifestations of cultural heroism across folklore, literature, film, and comics from the 19th century to the present, with particular interest in how heroic archetypes perform resistance and survival strategies while navigating systemic oppression. He also publishes creative work alongside his academic research.</p>
+        </div>
+      </article>
+      
+    </section>
+
+
+
+    <footer>
+      <p class="mb-1">Contact: <a href="mailto:info@delectroit.example">info@delectroit.example</a></p>
+      <small>Delectroit — a community mapping project.</small>
+    </footer>
+  </main>
+
+  <!-- Bootstrap JS (optional) -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
