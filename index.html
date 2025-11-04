@@ -180,11 +180,27 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <nav class="nav flex-column">
-          <a class="nav-link" href="#" id="zoom-detroit">Zoom to Detroit</a>
-          <a class="nav-link" href="#" id="fit-markers">Fit markers</a>
-          <a class="nav-link" href="teams.html" id="teams-link-modal">Teams</a>
-          <!-- About removed here to keep single About in top navbar -->
+        var zoomEl = document.getElementById('zoom-detroit');
+        if (zoomEl) {
+          zoomEl.addEventListener('click', function(e){
+            e.preventDefault();
+            map.setView([42.3314, -83.0458], 14);
+            var modalEl = document.getElementById('navModal');
+            var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            modal.hide();
+          });
+        }
+
+        var fitEl = document.getElementById('fit-markers');
+        if (fitEl) {
+          fitEl.addEventListener('click', function(e){
+            e.preventDefault();
+            if (allMarkers.getLayers().length) map.fitBounds(allMarkers.getBounds().pad(0.1));
+            var modalEl = document.getElementById('navModal');
+            var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            modal.hide();
+          });
+        }
         </nav>
       </div>
       <div class="modal-footer">
