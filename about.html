@@ -7,6 +7,7 @@
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
   <style>
     body { padding-top: 80px; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color:#231441; }
@@ -22,15 +23,14 @@
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Delectroit</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navTop" aria-controls="navTop" aria-expanded="false" aria-label="Toggle navigation">
+      <a class="navbar-brand" href="index.html">Delectroit</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTop" aria-controls="navbarTop" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-
-      <div class="collapse navbar-collapse" id="navTop">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="index.html">Map</a></li>
-          <li class="nav-item"><a class="nav-link active" href="about.html">About</a></li>
+      <div class="collapse navbar-collapse" id="navbarTop">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item"><a class="nav-link" id="about-link" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" id="teams-link" href="teams.html">Teams</a></li>
         </ul>
       </div>
     </div>
@@ -90,8 +90,84 @@
     </footer>
   </main>
 
-  <!-- Bootstrap JS (optional for interactive navbar) -->
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"></script>
+  <!-- Nav modal (copy same markup from index.html) -->
+<div class="modal fade" id="navModal" tabindex="-1" aria-labelledby="navModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div style="width:100%; display:flex; align-items:center; gap:12px;">
+          <div style="flex:1; background:linear-gradient(90deg,#6f42c1,#8e44cc); color:#fff; padding:10px 14px; border-radius:6px;">
+            <h5 class="modal-title mb-0" id="navModalLabel">Delectroit — Navigation</h5>
+            <small id="navModalSub" class="d-block" style="opacity:.9;">Quick actions & map controls</small>
+            <p class="mb-0 mt-2" style="font-size:13px; line-height:1.3; opacity:0.95;">
+              Welcome to Delectroit, a mapping project showcasing Detroit's vibrant sound art scene.
+            </p>
+          </div>
+          <div class="btn-group ms-2" role="group" aria-label="Nav controls" style="align-self:flex-start;">
+            <button type="button" class="btn btn-sm btn-light" title="Show project description">
+              <i class="bi bi-info-circle-fill"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-light" title="Toggle purple header help">
+              <i class="bi bi-sliders"></i>
+            </button>
+          </div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <nav class="nav flex-column">
+          <a class="nav-link" href="#" id="zoom-detroit">Zoom to Detroit</a>
+          <a class="nav-link" href="#" id="fit-markers">Fit markers</a>
+          <a class="nav-link" href="teams.html" id="teams-link-modal">Teams</a>
+        </nav>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- include Bootstrap JS if not already present on the page -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"></script>
+
+<script>
+  // safe-guarded modal handlers (no errors if map isn't present)
+  try {
+    var teamsModalEl = document.getElementById('teams-link-modal');
+    if (teamsModalEl) {
+      teamsModalEl.addEventListener('click', function(e){
+        e.preventDefault();
+        var modalEl = document.getElementById('navModal');
+        var modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+        modalInstance.hide();
+        setTimeout(function(){ window.location.href = 'teams.html'; }, 200);
+      });
+    }
+    var zoomEl = document.getElementById('zoom-detroit');
+    if (zoomEl) {
+      zoomEl.addEventListener('click', function(e){
+        e.preventDefault();
+        if (window.map && typeof map.setView === 'function') map.setView([42.3314,-83.0458],14);
+        var modalEl = document.getElementById('navModal');
+        var modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+        modalInstance.hide();
+      });
+    }
+    var fitEl = document.getElementById('fit-markers');
+    if (fitEl) {
+      fitEl.addEventListener('click', function(e){
+        e.preventDefault();
+        if (window.allMarkers && window.allMarkers.getLayers && allMarkers.getLayers().length) {
+          map.fitBounds(allMarkers.getBounds().pad(0.1));
+        }
+        var modalEl = document.getElementById('navModal');
+        var modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+        modalInstance.hide();
+      });
+    }
+  } catch(e){}
+</script>
 </body>
 </html>

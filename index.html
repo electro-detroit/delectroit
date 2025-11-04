@@ -140,6 +140,9 @@
          <li class="nav-item">
            <a class="nav-link" id="about-link" href="about.html">About</a>
          </li>
+        <li class="nav-item">
+          <a class="nav-link" id="teams-link" href="teams.html">Teams</a>
+        </li>
        </ul>
     </div>
   </div>
@@ -180,6 +183,7 @@
         <nav class="nav flex-column">
           <a class="nav-link" href="#" id="zoom-detroit">Zoom to Detroit</a>
           <a class="nav-link" href="#" id="fit-markers">Fit markers</a>
+          <a class="nav-link" href="teams.html" id="teams-link-modal">Teams</a>
           <!-- About removed here to keep single About in top navbar -->
         </nav>
       </div>
@@ -474,6 +478,18 @@ if (aboutEl) {
   });
 }
 
+// Teams link in nav modal: hide modal then navigate
+var teamsModalEl = document.getElementById('teams-link-modal');
+if (teamsModalEl) {
+  teamsModalEl.addEventListener('click', function(e){
+    e.preventDefault();
+    var modalEl = document.getElementById('navModal');
+    var modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+    modalInstance.hide();
+    setTimeout(function(){ window.location.href = 'teams.html'; }, 200);
+  });
+}
+
 // Optional: add a small Leaflet control button that opens the same modal
 var NavControl = L.Control.extend({
   onAdd: function(map){
@@ -500,5 +516,9 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 </script>
+<!-- copy into the <head> of about.html / teams.html -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<style> body { padding-top: 160px; } </style>
 </body>
 </html>

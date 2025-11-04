@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Teams — Delectroit</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    body { padding-top: 80px; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color:#231441; }
+    .navbar.fixed-top { background: linear-gradient(90deg,#6f42c1,#8e44cc); height:80px; box-shadow: 0 6px 18px rgba(111,66,193,0.18); }
+    .navbar-brand { position: absolute; left:50%; top:50%; transform: translate(-50%,-50%); color:#fff; font-weight:700; }
+    .container { max-width: 900px; }
+    .section-card { border-radius:10px; border:1px solid #e9dff8; background:#fbf7ff; padding:18px; margin-bottom:16px; }
+    footer { margin: 28px 0 48px; color:#5a3b83; font-size:13px; text-align:center; }
+
+    /* member card & avatar styles */
+    .member-card { border-radius:10px; border:1px solid #e9dff8; background:#fbf7ff; padding:14px; margin-bottom:16px; display:flex; gap:12px; align-items:flex-start; }
+    .member-avatar { width:72px; height:72px; border-radius:8px; background:#eaddff; display:inline-flex; align-items:center; justify-content:center; font-weight:700; color:#6b3ea8; flex:0 0 72px; overflow:hidden; }
+    .member-avatar img { width:100%; height:100%; object-fit:cover; display:block; }
+    .avatar-initials { font-weight:700; color:#6b3ea8; font-size:18px; }
+    .member-meta { flex:1; }
+    .member-role { color:#6f42c1; font-weight:600; margin-bottom:6px; }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="index.html">Delectroit</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTop" aria-controls="navbarTop" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarTop">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item"><a class="nav-link" id="about-link" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" id="teams-link" href="teams.html">Teams</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+    <header class="mb-4">
+      <h1 class="h3">Teams</h1>
+      <p class="lead mb-0">Project contributors and roles.</p>
+    </header>
+
+    <!-- Replace / extend the content below with your existing teams page content -->
+    <section class="section-card" aria-labelledby="team-list-heading">
+      <h2 id="team-list-heading" class="h5 mb-2">Team</h2>
+      <p class="mb-0">Add your team members and roles here — this page now includes the shared navbar and navigation modal so links work consistently across the site.</p>
+    </section>
+
+    <section aria-labelledby="core-team-heading">
+      <h2 id="core-team-heading" class="h5 mb-3">Core team</h2>
+
+      <!-- Alex Lane, Sam Morgan, and R. Lee removed -->
+      <article class="member-card" aria-labelledby="member-4">
+        <div class="member-avatar" aria-hidden="true">
+          <!-- Replace src with your image path (optional). If no image, keep initials span. -->
+          <img src="avatars/bryttany.jpg" alt="Bryttany Grimes" onerror="this.style.display='none'">
+          <span class="avatar-initials">BG</span>
+        </div>
+        <div class="member-meta">
+          <div id="member-4" class="h6 mb-0">Bryttany Grimes <small class="text-muted">(she/her)</small></div>
+          <div class="member-role">Researcher — History & gender studies</div>
+          <p class="mb-0">Second‑year PhD student in the Department of History. Bryttany's work centers on Nigeria, gender, Islam, and British colonialism; her current research examines how Hausa women use dress to express internal valuations of womanhood in response to Islam, colonial rule, and Western influence.</p>
+        </div>
+      </article>
+
+      <article class="member-card" aria-labelledby="member-5">
+        <div class="member-avatar" aria-hidden="true">
+          <img src="avatars/ayaat.jpg" alt="Ayaat Ismail" onerror="this.style.display='none'">
+          <span class="avatar-initials">AI</span>
+        </div>
+        <div class="member-meta">
+          <div id="member-5" class="h6 mb-0">Ayaat Ismail <small class="text-muted">(she/her)</small></div>
+          <div class="member-role">Researcher — English & cultural studies</div>
+          <p class="mb-0">English Ph.D. student at Michigan State University focusing on 21st‑century Palestinian cultural production, with particular interest in portrayals of Palestinians in literature and film. Her work examines memory, surveillance, infrastructure, carcerality, and expressions of sumud.</p>
+        </div>
+      </article>
+
+      <article class="member-card" aria-labelledby="member-6">
+        <div class="member-avatar" aria-hidden="true">
+          <img src="avatars/harry.jpg" alt="Harry M. Foster" onerror="this.style.display='none'">
+          <span class="avatar-initials">HF</span>
+        </div>
+        <div class="member-meta">
+          <div id="member-6" class="h6 mb-0">Harry M. Foster <small class="text-muted">(he/him)</small></div>
+          <div class="member-role">Researcher — English & cultural studies</div>
+          <p class="mb-0">PhD student in the Department of English at Michigan State University. He completed his undergraduate degree in English and Creative Writing at Columbia University and served five years in the Marines. His research examines expressions and manifestations of cultural heroism across folklore, literature, film, and comics from the 19th century to the present, with particular interest in how heroic archetypes perform resistance and survival strategies while navigating systemic oppression. He also publishes creative work alongside his academic research.</p>
+        </div>
+      </article>
+      
+    </section>
+
+
+
+    <footer>
+      <p class="mb-1">Contact: <a href="mailto:info@delectroit.example">info@delectroit.example</a></p>
+      <small>Delectroit — a community mapping project.</small>
+    </footer>
+  </main>
+
+  <!-- Nav modal (shared with index/about) -->
+  <div class="modal fade" id="navModal" tabindex="-1" aria-labelledby="navModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div style="width:100%; display:flex; align-items:center; gap:12px;">
+            <div style="flex:1; background:linear-gradient(90deg,#6f42c1,#8e44cc); color:#fff; padding:10px 14px; border-radius:6px;">
+              <h5 class="modal-title mb-0" id="navModalLabel">Delectroit — Navigation</h5>
+              <small id="navModalSub" class="d-block" style="opacity:.9;">Quick actions & map controls</small>
+              <p class="mb-0 mt-2" style="font-size:13px; line-height:1.3; opacity:0.95;">
+                Welcome to Delectroit, a mapping project showcasing Detroit's vibrant sound art scene.
+              </p>
+            </div>
+            <div class="btn-group ms-2" role="group" aria-label="Nav controls" style="align-self:flex-start;">
+              <button type="button" class="btn btn-sm btn-light" title="Show project description">
+                <i class="bi bi-info-circle-fill"></i>
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-light" title="Toggle purple header help">
+                <i class="bi bi-sliders"></i>
+              </button>
+            </div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <nav class="nav flex-column">
+            <a class="nav-link" href="#" id="zoom-detroit">Zoom to Detroit</a>
+            <a class="nav-link" href="#" id="fit-markers">Fit markers</a>
+            <a class="nav-link" href="teams.html" id="teams-link-modal">Teams</a>
+          </nav>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- include Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"></script>
+
+  <script>
+    // safe-guarded modal handlers (no errors if map isn't present)
+    try {
+      var teamsModalEl = document.getElementById('teams-link-modal');
+      if (teamsModalEl) {
+        teamsModalEl.addEventListener('click', function(e){
+          e.preventDefault();
+          var modalEl = document.getElementById('navModal');
+          var modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+          modalInstance.hide();
+          setTimeout(function(){ window.location.href = 'teams.html'; }, 200);
+        });
+      }
+      var zoomEl = document.getElementById('zoom-detroit');
+      if (zoomEl) {
+        zoomEl.addEventListener('click', function(e){
+          e.preventDefault();
+          if (window.map && typeof map.setView === 'function') map.setView([42.3314,-83.0458],14);
+          var modalEl = document.getElementById('navModal');
+          var modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+          modalInstance.hide();
+        });
+      }
+      var fitEl = document.getElementById('fit-markers');
+      if (fitEl) {
+        fitEl.addEventListener('click', function(e){
+          e.preventDefault();
+          if (window.allMarkers && window.allMarkers.getLayers && allMarkers.getLayers().length) {
+            map.fitBounds(allMarkers.getBounds().pad(0.1));
+          }
+          var modalEl = document.getElementById('navModal');
+          var modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+          modalInstance.hide();
+        });
+      }
+    } catch(e){}
+  </script>
+</body>
+</html>
