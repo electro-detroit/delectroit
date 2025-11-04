@@ -32,12 +32,12 @@
   body { height: 100%; margin: 0; padding: 0; }
 
   /* reserve space for the fixed navbar (increase to match taller navbar) */
-  body { padding-top: 80px; }
+  body { padding-top: 100px; }
 
   /* taller purple navbar with centered title */
   .navbar.fixed-top{
     background: linear-gradient(90deg,#6f42c1,#8e44cc) !important;
-    height: 80px;
+    height: 100px;
     box-shadow: 0 6px 18px rgba(111,66,193,0.18);
   }
   .navbar .container-fluid { position: relative; }
@@ -49,7 +49,7 @@
     top: 50%;
     transform: translate(-50%,-50%);
     font-weight: 700;
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     color: #fff !important;
     letter-spacing: 0.4px;
   }
@@ -63,7 +63,7 @@
   }
 
   /* make the map fit the remaining viewport below the navbar */
-  .map { height: calc(100vh - 80px); }
+  .map { height: calc(100vh - 100px); }
 
 /* Bootstrap-icon marker styling */
 .bi-marker {
@@ -123,21 +123,22 @@
 <!-- Top navigation bar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Delectroit</a>
+    <a class="navbar-brand" href="index.html">Delectroit</a>
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTop" aria-controls="navbarTop" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarTop">
-      <ul class="navbar-nav ms-auto">
+      <ul class="navbar-nav ms-auto align-items-center">
         <li class="nav-item">
-          <a class="nav-link" href="#" id="zoom-detroit-top">Zoom to Detroit</a>
+          <a class="nav-link" id="zoom-detroit" href="#">Zoom to Detroit</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" id="fit-markers-top">Fit markers</a>
+          <a class="nav-link" id="fit-markers" href="#">Fit markers</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" id="about-top">About</a>
+          <a class="nav-link" id="about-link" href="about.html">About</a>
         </li>
       </ul>
     </div>
@@ -145,11 +146,6 @@
 </nav>
 
 <div id="map" class="map"></div>
-
-<!-- floating nav button (Bootstrap) -->
-<button type="button" class="btn btn-primary nav-btn" data-bs-toggle="modal" data-bs-target="#navModal">
-  Menu
-</button>
 
 <!-- Nav modal -->
 <div class="modal fade" id="navModal" tabindex="-1" aria-labelledby="navModalLabel" aria-hidden="true">
@@ -167,29 +163,24 @@
           </div>
 
           <div class="btn-group ms-2" role="group" aria-label="Nav controls" style="align-self:flex-start;">
-            <button type="button" class="btn btn-sm btn-light" title="Zoom to Detroit"
-              onclick="(function(){ if(window.map) window.map.setView([42.3314,-83.0458],13); var modalEl=document.getElementById('navModal'); var modalInstance = bootstrap.Modal.getInstance(modalEl); if (modalInstance) modalInstance.hide(); })()">
-              <i class="bi bi-geo-alt-fill"></i>
-            </button>
-
             <button type="button" class="btn btn-sm btn-light" title="Show project description"
-              onclick="(function(){ var modal=document.getElementById('navModal'); var body=modal.querySelector('.modal-body'); body.innerHTML = '<p class=&quot;mb-2&quot;><strong>Delectroit:</strong> Interactive map of Detroit sound-art venues and installations. Click markers for details.</p><p class=&quot;mb-0&quot;>Tip: Use the &quot;Fit markers&quot; action to view all locations.</p>'; })()">
+              onclick="(function(){ var modal=document.getElementById('navModal'); var body=modal.querySelector('.modal-body'); body.innerHTML = '<p class=&quot;mb-2&quot;><strong>Delectroit:</strong> Interactive map of Detroit sound-art venues and installations. Click markers for details.</p>'; })()">
               <i class="bi bi-info-circle-fill"></i>
             </button>
-
-            <button type="button" class="btn btn-sm btn-outline-light" title="Toggle purple header help"
-              onclick="(function(btn){ var sub=document.getElementById('navModalSub'); sub.textContent = sub.textContent.startsWith('Quick') ? 'Use the icons to quickly control the map.' : 'Quick actions & map controls'; })(this)">
-              <i class="bi bi-sliders"></i>
-            </button>
-          </div>
+ 
+             <button type="button" class="btn btn-sm btn-outline-light" title="Toggle purple header help"
+               onclick="(function(btn){ var sub=document.getElementById('navModalSub'); sub.textContent = sub.textContent.startsWith('Quick') ? 'Use the icons to quickly control the map.' : 'Quick actions & map controls'; })(this)">
+               <i class="bi bi-sliders"></i>
+             </button>
+           </div>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <nav class="nav flex-column">
           <a class="nav-link" href="#" id="zoom-detroit">Zoom to Detroit</a>
-          <a class="nav-link" href="#" id="fit-markers">Project Description</a>
-          <a class="nav-link" href="#" id="about-link">Our Team</a>
+          <a class="nav-link" href="#" id="fit-markers">Fit markers</a>
+          <a class="nav-link" href="about.html" id="about-link">About</a>
         </nav>
       </div>
       <div class="modal-footer">
@@ -256,7 +247,7 @@
           <div class="text-col">
             <!-- startup tip removed -->
             <div class="small-muted">
-              Click markers for details, or use the Menu (top-left) to zoom and fit markers.
+              Click markers for details, or use the Menu to zoom and fit markers.
             </div>
 
             <div style="margin-top:12px;" class="dont-show">
@@ -465,9 +456,20 @@ document.getElementById('fit-markers').addEventListener('click', function(e){
   modal.hide();
 });
 
-document.getElementById('about-link').addEventListener('click', function(e){
-  e.preventDefault();
-  alert('Delectroit — mapping project'); // replace with nicer UI as needed
+// replaced the single about-link handler with one that attaches to all elements with that id
+// and navigates to the about page after closing the modal.
+Array.from(document.querySelectorAll('#about-link')).forEach(function(el){
+  el.addEventListener('click', function(e){
+    e.preventDefault();
+    // close nav modal if open
+    var modalEl = document.getElementById('navModal');
+    if (modalEl) {
+      var modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+      modalInstance.hide();
+    }
+    // give modal a moment to close, then navigate
+    setTimeout(function(){ window.location.href = 'about.html'; }, 200);
+  });
 });
 
 // Optional: add a small Leaflet control button that opens the same modal
@@ -485,7 +487,7 @@ var NavControl = L.Control.extend({
   },
   onRemove: function(map){}
 });
-(new NavControl({ position: 'topright' })).addTo(map);
+(new NavControl({ position: 'topright' })).addTo(map;
 
 // show startup modal on page load
 document.addEventListener('DOMContentLoaded', function(){
