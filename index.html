@@ -32,13 +32,18 @@
   body { height: 100%; margin: 0; padding: 0; }
 
   /* reserve space for the fixed navbar (increase to match taller navbar) */
-  body { padding-top: 100px; }
+  /* increased top padding to match taller translucent navbar */
+  body { padding-top: 160px; }
 
   /* taller purple navbar with centered title */
   .navbar.fixed-top{
-    background: linear-gradient(90deg,#6f42c1,#8e44cc) !important;
-    height: 100px;
-    box-shadow: 0 6px 18px rgba(111,66,193,0.18);
+    /* purple with a little translucency */
+    background: linear-gradient(90deg, rgba(111,66,193,0.92), rgba(142,68,204,0.90)) !important;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    height: 160px;
+    box-shadow: 0 10px 24px rgba(111,66,193,0.12);
   }
   .navbar .container-fluid { position: relative; }
 
@@ -63,7 +68,7 @@
   }
 
   /* make the map fit the remaining viewport below the navbar */
-  .map { height: calc(100vh - 100px); }
+  .map { height: calc(100vh - 160px); }
 
 /* Bootstrap-icon marker styling */
 .bi-marker {
@@ -131,16 +136,11 @@
 
     <div class="collapse navbar-collapse" id="navbarTop">
       <ul class="navbar-nav ms-auto align-items-center">
-        <li class="nav-item">
-          <a class="nav-link" id="zoom-detroit" href="#">Zoom to Detroit</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="fit-markers" href="#">Fit markers</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="about-link" href="about.html">About</a>
-        </li>
-      </ul>
+         <!-- only keep About in the top navbar -->
+         <li class="nav-item">
+           <a class="nav-link" id="about-link" href="about.html">About</a>
+         </li>
+       </ul>
     </div>
   </div>
 </nav>
@@ -180,7 +180,7 @@
         <nav class="nav flex-column">
           <a class="nav-link" href="#" id="zoom-detroit">Zoom to Detroit</a>
           <a class="nav-link" href="#" id="fit-markers">Fit markers</a>
-          <a class="nav-link" href="about.html" id="about-link">About</a>
+          <!-- About removed here to keep single About in top navbar -->
         </nav>
       </div>
       <div class="modal-footer">
@@ -291,7 +291,7 @@
   var exploreBtn = modalEl.querySelector('#exploreBtn');
   if (exploreBtn) {
     exploreBtn.addEventListener('click', function(){
-      if (window.map && typeof map.setView === 'function') map.setView([42.3314,-83.0458],13);
+      if (window.map && typeof map.setView === 'function') map.setView([42.3314,-83.0458],14);
       var modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
       modalInstance.hide();
     });
@@ -309,8 +309,8 @@
 </script>
 
 <script>
-// center on Detroit, MI
-var map = L.map('map').setView([42.3314, -83.0458], 12);
+// center on Detroit, MI (zoomed in a bit more)
+var map = L.map('map').setView([42.3314, -83.0458], 14);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { 
     maxZoom: 19,
@@ -320,7 +320,17 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 // (Removed duplicate default markers — keep only the speakerIcon markers below)
 
 // ensure Leaflet recalculates size if the viewport changes
-setTimeout(function(){ map.invalidateSize(); }, 200);
+// feature group to collect markers for "fit" action
+var allMarkers = L.featureGroup();
+// wait a moment for tiles/DOM to settle, then invalidate size, collect markers and fit bounds
+setTimeout(function(){
+  map.invalidateSize();
+  // collect markers already added to the map into the feature group
+  map.eachLayer(function(layer){
+    if (layer instanceof L.Marker) allMarkers.addLayer(layer);
+  });
+  if (allMarkers.getLayers().length) map.fitBounds(allMarkers.getBounds().pad(0.1));
+}, 300);
 window.addEventListener('resize', function(){ map.invalidateSize(); });
 
 
@@ -432,16 +442,10 @@ L.marker([42.3668187, -83.0767079], {icon: speakerIcon}).addTo(map)
     </ul>
   </div>`);
 
-// collect all markers into a layer group for "fit" action (moved here so it picks up the speakerIcon markers)
-var allMarkers = L.featureGroup();
-map.eachLayer(function(layer){
-  if (layer instanceof L.Marker) allMarkers.addLayer(layer);
-});
-
 // Modal actions
 document.getElementById('zoom-detroit').addEventListener('click', function(e){
   e.preventDefault();
-  map.setView([42.3314, -83.0458], 13);
+  map.setView([42.3314, -83.0458], 14);
   // close modal via Bootstrap API
   var modalEl = document.getElementById('navModal');
   var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
@@ -456,21 +460,19 @@ document.getElementById('fit-markers').addEventListener('click', function(e){
   modal.hide();
 });
 
-// replaced the single about-link handler with one that attaches to all elements with that id
-// and navigates to the about page after closing the modal.
-Array.from(document.querySelectorAll('#about-link')).forEach(function(el){
-  el.addEventListener('click', function(e){
+// About link in top navbar: close nav modal if open then navigate
+var aboutEl = document.getElementById('about-link');
+if (aboutEl) {
+  aboutEl.addEventListener('click', function(e){
     e.preventDefault();
-    // close nav modal if open
     var modalEl = document.getElementById('navModal');
     if (modalEl) {
       var modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
       modalInstance.hide();
     }
-    // give modal a moment to close, then navigate
     setTimeout(function(){ window.location.href = 'about.html'; }, 200);
   });
-});
+}
 
 // Optional: add a small Leaflet control button that opens the same modal
 var NavControl = L.Control.extend({
