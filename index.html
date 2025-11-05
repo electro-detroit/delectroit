@@ -33,7 +33,7 @@
 
   /* reserve space for the fixed navbar (increase to match taller navbar) */
   /* increased top padding to match taller translucent navbar */
-  body { padding-top: 160px; }
+  body { padding-top: 160px; /* keep navbar space */ overflow: hidden; } /* disable page scrolling */
 
   /* taller purple navbar with centered title */
   .navbar.fixed-top{
@@ -67,56 +67,58 @@
     transform: translateY(-50%);
   }
 
-  /* make the map fit the remaining viewport below the navbar */
-  .map { height: calc(100vh - 160px); }
+  /* make the map fill the remaining viewport under the navbar and prevent page scroll */
+  .map { height: calc(100vh - 160px); min-height: 0; max-height: none; }
+  /* option B (alternate): fixed px height, e.g. 600px */
+  /* .map { height: 600px; } */
 
-/* Bootstrap-icon marker styling */
-.bi-marker {
-  font-size: 24px;        /* adjust marker size */
-  color: #6f42c1;         /* purple marker color */
-  line-height: 1;
-  display: inline-block;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-}
+  /* Bootstrap-icon marker styling */
+  .bi-marker {
+    font-size: 24px;        /* adjust marker size */
+    color: #6f42c1;         /* purple marker color */
+    line-height: 1;
+    display: inline-block;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  }
 
-/* popup color overrides (light purple background, darker purple border/text) */
-.leaflet-popup-content-wrapper {
-  background: #f3e8ff;            /* light purple background */
-  color: #2e1050;                 /* popup text color */
-  border: 2px solid #6f42c1;      /* purple border */
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(111,66,193,0.18);
-}
-.leaflet-popup-tip,
-.leaflet-popup-tip-container {
-  /* make the pointer match the popup background */
-  color: #f3e8ff;
-}
-.leaflet-popup-content {
-  margin: 8px 12px;
-  font-size: 14px;
-}
-.leaflet-popup-close-button {
-  color: #6f42c1;                 /* close button color */
-  text-shadow: none;
-}
+  /* popup color overrides (light purple background, darker purple border/text) */
+  .leaflet-popup-content-wrapper {
+    background: #f3e8ff;            /* light purple background */
+    color: #2e1050;                 /* popup text color */
+    border: 2px solid #6f42c1;      /* purple border */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(111,66,193,0.18);
+  }
+  .leaflet-popup-tip,
+  .leaflet-popup-tip-container {
+    /* make the pointer match the popup background */
+    color: #f3e8ff;
+  }
+  .leaflet-popup-content {
+    margin: 8px 12px;
+    font-size: 14px;
+  }
+  .leaflet-popup-close-button {
+    color: #6f42c1;                 /* close button color */
+    text-shadow: none;
+  }
 
-/* optional: style any headings inside popups */
-.leaflet-popup-content h5,
-.leaflet-popup-content strong {
-  color: #40105a;
-  margin: 0 0 6px 0;
-}
+  /* optional: style any headings inside popups */
+  .leaflet-popup-content h5,
+  .leaflet-popup-content strong {
+    color: #40105a;
+    margin: 0 0 6px 0;
+  }
 
-/* popup image styling - add this so images inside popups look good */
-.leaflet-popup-content .popup-img{
-  width: 100%;
-  max-height: 140px;
-  object-fit: cover;
-  display: block;
-  margin: 0 0 8px 0;
-  border-radius: 6px;
-}
+  /* popup image styling - add this so images inside popups look good */
+  .leaflet-popup-content .popup-img{
+    width: 100%;
+    max-height: 140px;
+    object-fit: cover;
+    display: block;
+    margin: 0 0 8px 0;
+    border-radius: 6px;
+  }
   .popup-center {
     text-align: center;
   }
@@ -149,6 +151,13 @@
 </nav>
 
 <div id="map" class="map"></div>
+<!-- example content below the map so page can scroll -->
+<main class="container py-4">
+  <section class="section-card">
+    <h2>More content</h2>
+    <p>Add your page content here — longer content will produce vertical scroll.</p>
+  </section>
+</main>
 
 <!-- Nav modal -->
 <div class="modal fade" id="navModal" tabindex="-1" aria-labelledby="navModalLabel" aria-hidden="true">
@@ -366,12 +375,6 @@ const speakerIcon = L.divIcon({
 });
 
 // apply to markers
-L.marker([42.3314, -83.0458], { icon: speakerIcon }).addTo(map)
-  .bindPopup(`<div><img src="images/detroit.jpg" alt="Detroit skyline" class="popup-img"><div class="popup-center"><strong>Detroit, MI</strong></div>
-    <div><p>Welcome to Delectroit, a mapping project showcasing Detroit's vibrant sound art scene. Explore the locations of various sound installations and venues across the city.</p>
-    </div><p>Created: 2021 ADD DESCRIPTION</p>
-  </div>`).openPopup();
-
 L.marker([42.3280226, -83.0448932], {icon: speakerIcon}).addTo(map)
  .bindPopup(`<div><img src="Assets/Hart_Plaza_Detroit.jpg" alt="Hart Plaza" class="popup-img"><div class="popup-center"><strong>Hart Plaza</strong></div><div><P>Created: 1975 ADD DESCRIPTION</div>
     <ul>
