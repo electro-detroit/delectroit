@@ -151,13 +151,15 @@
 </nav>
 
 <div id="map" class="map"></div>
-<!-- example content below the map so page can scroll -->
+<!-- remove this block if you don't need page scroll/demo content -->
+<!--
 <main class="container py-4">
   <section class="section-card">
     <h2>More content</h2>
     <p>Add your page content here — longer content will produce vertical scroll.</p>
   </section>
 </main>
+-->
 
 <!-- Nav modal -->
 <div class="modal fade" id="navModal" tabindex="-1" aria-labelledby="navModalLabel" aria-hidden="true">
@@ -189,29 +191,12 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        var zoomEl = document.getElementById('zoom-detroit');
-        if (zoomEl) {
-          zoomEl.addEventListener('click', function(e){
-            e.preventDefault();
-            map.setView([42.3314, -83.0458], 14);
-            var modalEl = document.getElementById('navModal');
-            var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-            modal.hide();
-          });
-        }
-
-        var fitEl = document.getElementById('fit-markers');
-        if (fitEl) {
-          fitEl.addEventListener('click', function(e){
-            e.preventDefault();
-            if (allMarkers.getLayers().length) map.fitBounds(allMarkers.getBounds().pad(0.1));
-            var modalEl = document.getElementById('navModal');
-            var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-            modal.hide();
-          });
-        }
-        </nav>
-      </div>
+        <!-- Controls for nav modal: zoom / fit markers -->
+        <div class="d-flex gap-2">
+          <button id="zoom-detroit" class="btn btn-sm btn-primary">Zoom to Detroit</button>
+          <button id="fit-markers" class="btn btn-sm btn-outline-primary">Fit markers</button>
+        </div>
+       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
@@ -579,9 +564,4 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 </script>
-<!-- copy into the <head> of about.html / teams.html -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-<style> body { padding-top: 160px; } </style>
-</body>
-</html>
+<!-- duplicate head assets removed -->

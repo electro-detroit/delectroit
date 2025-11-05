@@ -293,38 +293,3 @@ L.control.slider = function (options) {
 L.control.sliderControl = function (options) {
     return new L.Control.Slider(options);
 };
-
-// create markers with a time property and a popup
-var events = [
-  {lat: 42.3314, lng: -83.0458, time: '2020-01-01T10:00:00Z', popup: 'Event A'},
-  {lat: 42.3320, lng: -83.0465, time: '2020-01-02T14:30:00Z', popup: 'Event B'},
-  {lat: 42.3340, lng: -83.0470, time: '2020-01-03T09:15:00Z', popup: 'Event C'}
-];
-
-var fg = L.featureGroup();
-events.forEach(function(e){
-  // attach time as an option so SliderControl can read marker.options.time
-  var m = L.marker([e.lat, e.lng], {time: e.time}).bindPopup(e.popup);
-  fg.addLayer(m);
-});
-map.addLayer(fg);
-
-// create slider control, telling it to read 'time' (default) from markers
-var slider = L.control.slider({
-  position: 'bottomleft',
-  layer: fg,            // pass the featureGroup
-  timeAttribute: 'time',
-  showPopups: true,
-  showAllOnStart: false,
-  follow: 0
-}).addTo(map);
-
-// optional: format timestamps shown in the timestamp box
-slider.extractTimestamp = function(timestamp, options){
-  if (!timestamp) return '';
-  var d = new Date(timestamp);
-  return d.toLocaleString(); // or custom format
-};
-
-// must call after control is in DOM and jQuery UI is loaded
-slider.startSlider();
