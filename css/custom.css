@@ -1,0 +1,10 @@
+.leaflet-control-slider {
+  background: rgba(255,255,255,0.95);
+  padding: 6px;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  font-size: 12px;
+  z-index: 1000;
+}
+#leaflet-slider { width: 220px; }
+#slider-timestamp { margin-top:6px; text-align:center; font-size:11px; display:block; }

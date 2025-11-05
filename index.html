@@ -10,8 +10,8 @@
     <!-- jQuery (required by jQuery UI) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- jQuery UI files -->
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
     <!-- jQuery UI Touch js (required for touchscreen use) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
 
@@ -363,7 +363,6 @@ setTimeout(function(){
 window.addEventListener('resize', function(){ map.invalidateSize(); });
 
 
-
 // Use a Bootstrap Icon inside a divIcon
 const biHtml = `<i class="bi bi-speaker-fill bi-marker" aria-hidden="true"></i>`;
 const speakerIcon = L.divIcon({
@@ -374,132 +373,141 @@ const speakerIcon = L.divIcon({
   popupAnchor: [0,-14]
 });
 
-// apply to markers
-L.marker([42.3280226, -83.0448932], {icon: speakerIcon}).addTo(map)
- .bindPopup(`<div><img src="Assets/Hart_Plaza_Detroit.jpg" alt="Hart Plaza" class="popup-img"><div class="popup-center"><strong>Hart Plaza</strong></div><div><P>Created: 1975 ADD DESCRIPTION</div>
-    <ul>
-      <li><strong>Name:</strong> Hart Plaza</li>
-      <li><strong>Address:</strong><br />1 Hart Plaza, Detroit, MI 48226, USA</li>
-      <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
-    </ul>
-  </div>`);
+// create a layer collection for the slider control
+var sliderLayer = L.featureGroup();
 
-L.marker([42.3630469, -83.0852008], {icon: speakerIcon}).addTo(map)
-  .bindPopup(`<div><img src="images/marble_bar.jpg" alt="Marble Bar" class="popup-img"><div class="popup-center"><strong>Marble Bar</strong></div><div><P>Created: 2015 ADD DESCRIPTION</div>
-    <ul>
-      <li><strong>Name:</strong> Marble Bar</li>
-      <li><strong>Address:</strong><br />1501 Holden St, Detroit, MI 48208, USA</li>
-      <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
-    </ul>
-  </div>`);
+// helper to create marker, add time property and add to both map and sliderLayer
+function addTimedMarker(lat, lng, popupHtml, timeStr) {
+  var opts = { icon: speakerIcon };
+  if (timeStr) opts.time = timeStr; // SliderControl expects a 'time' property (or configured timeAttribute)
+  var m = L.marker([lat, lng], opts).bindPopup(popupHtml);
+  m.addTo(map);
+  sliderLayer.addLayer(m);
+  return m;
+}
 
-L.marker([42.3580524, -83.0167091], {icon: speakerIcon}).addTo(map)
-  .bindPopup(`<div><img src="Assets/Spot Lite.jpg" alt="Spot Lite" class="popup-img"><div class="popup-center"><strong>Spot Lite Detroit</strong></div><div><P>Created: 2021 ADD DESCRIPTION</div>
-    <ul>
-      <li><strong>Name:</strong> Spot Lite Detroit</li>
-      <li><strong>Address:</strong><br />2905 Beaufait St, Detroit, MI 48207, USA</li>
-      <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
-    </ul>
-  </div>`);
+// replace your previous L.marker(...).addTo(map) blocks with addTimedMarker calls
+addTimedMarker(42.3280226, -83.0448932, `<div><img src="Assets/Hart_Plaza_Detroit.jpg" alt="Hart Plaza" class="popup-img"><div class="popup-center"><strong>Hart Plaza</strong></div><div><p>Created: 1975 ADD DESCRIPTION</p></div>
+  <ul>
+    <li><strong>Name:</strong> Hart Plaza</li>
+    <li><strong>Address:</strong><br />1 Hart Plaza, Detroit, MI 48226, USA</li>
+    <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
+  </ul>
+</div>`, '1975-01-01 00:00:00');
 
-L.marker([42.3726414, -83.0635704], {icon: speakerIcon}).addTo(map)
-  .bindPopup(`<div><img src="images/tangent_gallery.jpg" alt="Tangent Gallery and Hastings Street Ballroom" class="popup-img"><div class="popup-center"><strong>Tangent Gallery &amp; Hastings Street Ballroom</strong></div><div><P>Created: 1999 ADD DESCRIPTION</div>
-    <ul>
-      <li><strong>Name:</strong> Tangent Gallery &amp; Hastings Street Ballroom</li>
-      <li><strong>Address:</strong><br />715 Milwaukee Ave, Detroit, MI 48202, USA</li>
-      <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
-    </ul>
-  </div>`);
+addTimedMarker(42.3630469, -83.0852008, `<div><img src="images/marble_bar.jpg" alt="Marble Bar" class="popup-img"><div class="popup-center"><strong>Marble Bar</strong></div><div><p>Created: 2015 ADD DESCRIPTION</p></div>
+  <ul>
+    <li><strong>Name:</strong> Marble Bar</li>
+    <li><strong>Address:</strong><br />1501 Holden St, Detroit, MI 48208, USA</li>
+    <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
+  </ul>
+</div>`, '2015-01-01 00:00:00');
 
-L.marker([42.3380472, -83.0625672], {icon: speakerIcon}).addTo(map)
-  .bindPopup(`<div><img src="images/tv_lounge.jpg" alt="TV Lounge" class="popup-img"><div class="popup-center"><strong>TV Lounge</strong></div><div><P>Created: 2007 ADD DESCRIPTION</div>
-    <ul>
-      <li><strong>Name:</strong> TV Lounge</li>
-      <li><strong>Address:</strong><br />2548 Grand River Ave, Detroit, MI 48201, USA</li>
-      <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
-    </ul>
-  </div>`);
+addTimedMarker(42.3580524, -83.0167091, `<div><img src="Assets/Spot Lite.jpg" alt="Spot Lite" class="popup-img"><div class="popup-center"><strong>Spot Lite Detroit</strong></div><div><p>Created: 2021 ADD DESCRIPTION</p></div>
+  <ul>
+    <li><strong>Name:</strong> Spot Lite Detroit</li>
+    <li><strong>Address:</strong><br />2905 Beaufait St, Detroit, MI 48207, USA</li>
+    <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
+  </ul>
+</div>`, '2021-01-01 00:00:00');
 
-L.marker([42.3336153, -83.0548439], {icon: speakerIcon}).addTo(map)
-  .bindPopup(`<div><img src="images/city_club.jpg" alt="Leland City Club" class="popup-img"><div class="popup-center"><strong>Leland City Club</strong></div><div><P>Created: 1983 ADD DESCRIPTION</div>
-    <ul>
-      <li><strong>Name:</strong> Leland City Club</li>
-      <li><strong>Address:</strong><br />400 Bagley St, Detroit, MI 48226, USA</li>
-      <li><strong>Website:</strong> <a href="https://lelandcityclub.net/" target="_blank" rel="noopener">Leland City Club</a></li>
-    </ul>
-  </div>`);
+addTimedMarker(42.3726414, -83.0635704, `<div><img src="images/tangent_gallery.jpg" alt="Tangent Gallery and Hastings Street Ballroom" class="popup-img"><div class="popup-center"><strong>Tangent Gallery &amp; Hastings Street Ballroom</strong></div><div><p>Created: 1999 ADD DESCRIPTION</p></div>
+  <ul>
+    <li><strong>Name:</strong> Tangent Gallery &amp; Hastings Street Ballroom</li>
+    <li><strong>Address:</strong><br />715 Milwaukee Ave, Detroit, MI 48202, USA</li>
+    <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
+  </ul>
+</div>`, '1999-01-01 00:00:00');
 
-L.marker([42.3626399, -83.0819244], {icon: speakerIcon}).addTo(map)
-  .bindPopup(`<div><img src="images/lncln_fctry.jpg" alt="The Lincoln Factory" class="popup-img"><div class="popup-center"><strong>The Lincoln Factory</strong></div><div><P>Created: 1908 ADD DESCRIPTION</div>
-    <ul>
-      <li><strong>Name:</strong> The Lincoln Factory</li>
-      <li><strong>Address:</strong><br />1240 Holden St, Detroit, MI 48202, USA</li>
-      <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
-    </ul>
-  </div>`);
+addTimedMarker(42.3380472, -83.0625672, `<div><img src="images/tv_lounge.jpg" alt="TV Lounge" class="popup-img"><div class="popup-center"><strong>TV Lounge</strong></div><div><p>Created: 2007 ADD DESCRIPTION</p></div>
+  <ul>
+    <li><strong>Name:</strong> TV Lounge</li>
+    <li><strong>Address:</strong><br />2548 Grand River Ave, Detroit, MI 48201, USA</li>
+    <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
+  </ul>
+</div>`, '2007-01-01 00:00:00');
 
-L.marker([42.3311594, -83.0730077], {icon: speakerIcon}).addTo(map)
-  .bindPopup(`<div><img src="images/mcw.jpg" alt="Motor City Wine" class="popup-img"><div class="popup-center"><strong>Motor City Wine</strong></div><div><P>Created: (date n/a) ADD DESCRIPTION</div>
-    <ul>
-      <li><strong>Name:</strong> Motor City Wine</li>
-      <li><strong>Address:</strong><br />1949 Michigan Ave, Detroit, MI 48216, USA</li>
-      <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
-    </ul>
-  </div>`);
+addTimedMarker(42.3336153, -83.0548439, `<div><img src="images/city_club.jpg" alt="Leland City Club" class="popup-img"><div class="popup-center"><strong>Leland City Club</strong></div><div><p>Created: 1983 ADD DESCRIPTION</p></div>
+  <ul>
+    <li><strong>Name:</strong> Leland City Club</li>
+    <li><strong>Address:</strong><br />400 Bagley St, Detroit, MI 48226, USA</li>
+    <li><strong>Website:</strong> <a href="https://lelandcityclub.net/" target="_blank" rel="noopener">Leland City Club</a></li>
+  </ul>
+</div>`, '1983-01-01 00:00:00');
 
-L.marker([42.3338199, -83.0499098], {icon: speakerIcon}).addTo(map)
-  .bindPopup(`<div><img src="images/spkr_box.jpg" alt="SPKR BOX" class="popup-img"><div class="popup-center"><strong>SPKRBOX</strong></div><div><P>Created: 2022 ADD DESCRIPTION</div>
-    <ul>
-      <li><strong>Name:</strong> SPKRBOX</li>
-      <li><strong>Address:</strong><br />1501 Holden St, Detroit, MI 48208, USA</li>
-      <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
-    </ul>
-  </div>`);
+addTimedMarker(42.3626399, -83.0819244, `<div><img src="images/lncln_fctry.jpg" alt="The Lincoln Factory" class="popup-img"><div class="popup-center"><strong>The Lincoln Factory</strong></div><div><p>Created: 1908 ADD DESCRIPTION</p></div>
+  <ul>
+    <li><strong>Name:</strong> The Lincoln Factory</li>
+    <li><strong>Address:</strong><br />1240 Holden St, Detroit, MI 48202, USA</li>
+    <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
+  </ul>
+</div>`, '1908-01-01 00:00:00');
 
-L.marker([42.3668187, -83.0767079], {icon: speakerIcon}).addTo(map)
-  .bindPopup(`<div><img src="images/northern_lights.jpg" alt="Northern Lights Lounge" class="popup-img"><div class="popup-center"><strong>Northern Lights Lounge</strong></div><div><P>Created: 2004 ADD DESCRIPTION</div>
-    <ul>
-      <li><strong>Name:</strong> Paramita Sound</li>
-      <li><strong>Address:</strong><br />1517 Broadway St, Detroit, MI 48226, USA</li>
-      <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
-    </ul>
-  </div>`);
+addTimedMarker(42.3311594, -83.0730077, `<div><img src="images/mcw.jpg" alt="Motor City Wine" class="popup-img"><div class="popup-center"><strong>Motor City Wine</strong></div><div><p>Created: (date n/a) ADD DESCRIPTION</p></div>
+  <ul>
+    <li><strong>Name:</strong> Motor City Wine</li>
+    <li><strong>Address:</strong><br />1949 Michigan Ave, Detroit, MI 48216, USA</li>
+    <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
+  </ul>
+</div>`, '2025-01-01 00:00:00');
 
-L.marker([42.3791133, -83.0592492], {icon: speakerIcon}).addTo(map)
-  .bindPopup(`<div><img src="images/northern_lights.jpg" alt="Northern Lights Lounge" class="popup-img"><div class="popup-center"><strong>Northern Lights Lounge</strong></div><div><P>Created: 2004 ADD DESCRIPTION</div>
-    <ul>
-      <li><strong>Name:</strong> Russell</li>
-      <li><strong>Address:</strong><br />1600 Clay St, Detroit, MI 48211, USA</li>
-      <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
-    </ul>
-  </div>`);
+addTimedMarker(42.3338199, -83.0499098, `<div><img src="images/spkr_box.jpg" alt="SPKR BOX" class="popup-img"><div class="popup-center"><strong>SPKRBOX</strong></div><div><p>Created: 2022 ADD DESCRIPTION</p></div>
+  <ul>
+    <li><strong>Name:</strong> SPKRBOX</li>
+    <li><strong>Address:</strong><br />1501 Holden St, Detroit, MI 48208, USA</li>
+    <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
+  </ul>
+</div>`, '2022-01-01 00:00:00');
 
-  L.marker([42.3440836, -83.0615332], {icon: speakerIcon}).addTo(map)
-  .bindPopup(`<div><img src="images/northern_lights.jpg" alt="Northern Lights Lounge" class="popup-img"><div class="popup-center"><strong>Northern Lights Lounge</strong></div><div><P>Created: 2004 ADD DESCRIPTION</div>
-    <ul>
-      <li><strong>Name:</strong> Shipping Co.</li>
-      <li><strong>Address:</strong><br />474 Peterboro St, Detroit, MI 48201, USA</li>
-      <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
-    </ul>
-  </div>`);
+addTimedMarker(42.3668187, -83.0767079, `<div><img src="images/northern_lights.jpg" alt="Northern Lights Lounge" class="popup-img"><div class="popup-center"><strong>Northern Lights Lounge</strong></div><div><p>Created: 2004 ADD DESCRIPTION</p></div>
+  <ul>
+    <li><strong>Name:</strong> Paramita Sound</li>
+    <li><strong>Address:</strong><br />1517 Broadway St, Detroit, MI 48226, USA</li>
+    <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
+  </ul>
+</div>`, '2004-01-01 00:00:00');
 
-  L.marker([42.3754522, -83.0654343], {icon: speakerIcon}).addTo(map)
-  .bindPopup(`<div><img src="images/northern_lights.jpg" alt="Northern Lights Lounge" class="popup-img"><div class="popup-center"><strong>Northern Lights Lounge</strong></div><div><P>Created: 2004 ADD DESCRIPTION</div>
-    <ul>
-      <li><strong>Name:</strong> Red Door</li>
-      <li><strong>Address:</strong><br />7500 Oakland Ave, Detroit, MI 48211, USA</li>
-      <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
-    </ul>
-  </div>`);
+addTimedMarker(42.3791133, -83.0592492, `<div><img src="images/northern_lights.jpg" alt="Russell" class="popup-img"><div class="popup-center"><strong>Russell</strong></div><div><p>Created: 2004 ADD DESCRIPTION</p></div>
+  <ul>
+    <li><strong>Name:</strong> Russell</li>
+    <li><strong>Address:</strong><br />1600 Clay St, Detroit, MI 48211, USA</li>
+    <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
+  </ul>
+</div>`, '2004-01-01 00:00:00');
 
-  L.marker([42.3511427, -83.060109], {icon: speakerIcon}).addTo(map)
-  .bindPopup(`<div><img src="images/northern_lights.jpg" alt="Northern Lights Lounge" class="popup-img"><div class="popup-center"><strong>Northern Lights Lounge</strong></div><div><P>Created: 2004 ADD DESCRIPTION</div>
-    <ul>
-      <li><strong>Name:</strong> Magic Stick</li>
-      <li><strong>Address:</strong><br />4120 Woodward Ave, Detroit, MI 48201, USA</li>
-      <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
-    </ul>
-  </div>`);
+addTimedMarker(42.3440836, -83.0615332, `<div><img src="images/northern_lights.jpg" alt="Shipping Co." class="popup-img"><div class="popup-center"><strong>Shipping Co.</strong></div><div><p>Created: 2004 ADD DESCRIPTION</p></div>
+  <ul>
+    <li><strong>Name:</strong> Shipping Co.</li>
+    <li><strong>Address:</strong><br />474 Peterboro St, Detroit, MI 48201, USA</li>
+    <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
+  </ul>
+</div>`, '2004-01-01 00:00:00');
+
+addTimedMarker(42.3754522, -83.0654343, `<div><img src="images/northern_lights.jpg" alt="Red Door" class="popup-img"><div class="popup-center"><strong>Red Door</strong></div><div><p>Created: 2004 ADD DESCRIPTION</p></div>
+  <ul>
+    <li><strong>Name:</strong> Red Door</li>
+    <li><strong>Address:</strong><br />7500 Oakland Ave, Detroit, MI 48211, USA</li>
+    <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
+  </ul>
+</div>`, '2004-01-01 00:00:00');
+
+addTimedMarker(42.3511427, -83.060109, `<div><img src="images/northern_lights.jpg" alt="Magic Stick" class="popup-img"><div class="popup-center"><strong>Magic Stick</strong></div><div><p>Created: 2004 ADD DESCRIPTION</p></div>
+  <ul>
+    <li><strong>Name:</strong> Magic Stick</li>
+    <li><strong>Address:</strong><br />4120 Woodward Ave, Detroit, MI 48201, USA</li>
+    <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
+  </ul>
+</div>`, '2004-01-01 00:00:00');
+
+// create the control
+var sliderControl1 = L.control.sliderControl({
+  layer: sliderLayer,            // your L.featureGroup() with markers
+  position: 'topright',
+  timeAttribute: 'time',
+  showPopups: false
+});
+map.addControl(sliderControl1);  // MUST add to map
+sliderControl1.startSlider();    // then start it
 
 // Modal actions
 document.getElementById('zoom-detroit').addEventListener('click', function(e){
