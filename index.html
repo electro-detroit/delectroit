@@ -37,36 +37,29 @@
 
   /* taller purple navbar with centered title */
   .navbar.fixed-top{
-    /* purple with a little translucency */
-    background: linear-gradient(90deg, rgba(111,66,193,0.92), rgba(142,68,204,0.90)) !important;
+    /* use the attached image as a full-width background and keep the purple tint */
+    background: linear-gradient(90deg, rgba(111,66,193,0.45), rgba(142,68,204,0.45)), url('Assets/Delectroit Navigation Bar.jpg') center/cover no-repeat;
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     border-bottom: 1px solid rgba(255,255,255,0.08);
     height: 160px;
     box-shadow: 0 10px 24px rgba(111,66,193,0.12);
   }
-  .navbar .container-fluid { position: relative; }
 
-  /* center the brand/title in the navbar */
+  /* hide the inline <img> inside .navbar-brand (optional if you remove the tag) */
+  .navbar-brand img.navbar-brand-img {
+    display: none;
+  }
+
+  /* make sure brand text sits above the background */
   .navbar-brand {
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%,-50%);
-    font-weight: 700;
-    font-size: 1.5rem;
+    z-index: 2;
     color: #fff !important;
-    letter-spacing: 0.4px;
-  }
-
-  /* small logo to the left of the brand text */
-  .navbar-brand img.navbar-brand-img {
-    width: 40px;
-    height: 40px;
-    object-fit: cover;
-    border-radius: 6px;
-    margin-right: 10px;
-    vertical-align: middle;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
   }
 
   /* move the toggler to the right so it doesn't sit left of the centered title */
@@ -140,7 +133,10 @@
 <!-- Top navigation bar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="index.html">Delectroit</a>
+    <a class="navbar-brand" href="index.html">
+      <img src="Assets/Delectroit Navigation Bar.jpg" alt="Delectroit logo" class="navbar-brand-img" />
+      Delectroit
+    </a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTop" aria-controls="navbarTop" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -315,7 +311,7 @@
   var exploreBtn = modalEl.querySelector('#exploreBtn');
   if (exploreBtn) {
     exploreBtn.addEventListener('click', function(){
-      if (window.map && typeof map.setView === 'function') map.setView([42.3314,-83.0458],14);
+      if (window.map && typeof map.setView === 'function') map.setView([42.3314,-83.0458],10);
       var modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
       modalInstance.hide();
     });
@@ -333,8 +329,8 @@
 </script>
 
 <script>
-// center on Detroit, MI (zoomed in a bit more)
-var map = L.map('map').setView([42.3314, -83.0458], 14);
+// center on Detroit, MI (zoomed out more)
+var map = L.map('map').setView([42.3314, -83.0458], 10);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { 
     maxZoom: 19,
@@ -346,15 +342,14 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 // ensure Leaflet recalculates size if the viewport changes
 // feature group to collect markers for "fit" action
 var allMarkers = L.featureGroup();
-// wait a moment for tiles/DOM to settle, then invalidate size, collect markers and fit bounds
+// wait a moment for tiles/DOM to settle, then invalidate size and fit bounds (use allMarkers)
 setTimeout(function(){
   map.invalidateSize();
-  // collect markers already added to the map into the feature group
-  map.eachLayer(function(layer){
-    if (layer instanceof L.Marker) allMarkers.addLayer(layer);
-  });
-  if (allMarkers.getLayers().length) map.fitBounds(allMarkers.getBounds().pad(0.1));
-}, 300);
+  if (allMarkers.getLayers().length) {
+    // fitBounds with top padding so markers/popups are not hidden under navbar
+    map.fitBounds(allMarkers.getBounds(), { paddingTopLeft: [0,160], padding: [20,20] });
+  }
+}, 400);
 window.addEventListener('resize', function(){ map.invalidateSize(); });
 
 
@@ -375,9 +370,20 @@ var sliderLayer = L.featureGroup();
 function addTimedMarker(lat, lng, popupHtml, timeStr) {
   var opts = { icon: speakerIcon };
   if (timeStr) opts.time = timeStr; // SliderControl expects a 'time' property (or configured timeAttribute)
-  var m = L.marker([lat, lng], opts).bindPopup(popupHtml);
+  var m = L.marker([lat, lng], opts);
+  // bind popup with larger maxWidth/maxHeight so full info displays and auto panning is enabled
+  // add autoPan padding so popup will move above the fixed navbar (160px)
+  m.bindPopup(popupHtml, { 
+    maxWidth: 520, 
+    minWidth: 220, 
+    maxHeight: 480, 
+    autoPan: true,
+    autoPanPadding: [16, 16],
+    autoPanPaddingTopLeft: [0, 160] 
+  });
   m.addTo(map);
   sliderLayer.addLayer(m);
+  allMarkers.addLayer(m); // ensure this marker is part of the featureGroup used for "fit"
   return m;
 }
 
@@ -390,7 +396,7 @@ addTimedMarker(42.3280226, -83.0448932, `<div><img src="Assets/Hart_Plaza_Detroi
   </ul>
 </div>`, '1975-01-01 00:00:00');
 
-addTimedMarker(42.3630469, -83.0852008, `<div><img src="images/marble_bar.jpg" alt="Marble Bar" class="popup-img"><div class="popup-center"><strong>Marble Bar</strong></div><div><p>Created: 2015 ADD DESCRIPTION</p></div>
+addTimedMarker(42.3630469, -83.0852008, `<div><img src="Assets/The Marble Bar.jpg" alt="Marble Bar" class="popup-img"><div class="popup-center"><strong>Marble Bar</strong></div><div><p>Created: 2015 ADD DESCRIPTION</p></div>
   <ul>
     <li><strong>Name:</strong> Marble Bar</li>
     <li><strong>Address:</strong><br />1501 Holden St, Detroit, MI 48208, USA</li>
@@ -406,7 +412,7 @@ addTimedMarker(42.3580524, -83.0167091, `<div><img src="Assets/Spot Lite.jpg" al
   </ul>
 </div>`, '2021-01-01 00:00:00');
 
-addTimedMarker(42.3726414, -83.0635704, `<div><img src="images/tangent_gallery.jpg" alt="Tangent Gallery and Hastings Street Ballroom" class="popup-img"><div class="popup-center"><strong>Tangent Gallery &amp; Hastings Street Ballroom</strong></div><div><p>Created: 1999 ADD DESCRIPTION</p></div>
+addTimedMarker(42.3726414, -83.0635704, `<div><img src="Assets/Tangent Gallery.jpg" alt="Tangent Gallery and Hastings Street Ballroom" class="popup-img"><div class="popup-center"><strong>Tangent Gallery &amp; Hastings Street Ballroom</strong></div><div><p>Created: 1999 ADD DESCRIPTION</p></div>
   <ul>
     <li><strong>Name:</strong> Tangent Gallery &amp; Hastings Street Ballroom</li>
     <li><strong>Address:</strong><br />715 Milwaukee Ave, Detroit, MI 48202, USA</li>
@@ -414,7 +420,7 @@ addTimedMarker(42.3726414, -83.0635704, `<div><img src="images/tangent_gallery.j
   </ul>
 </div>`, '1999-01-01 00:00:00');
 
-addTimedMarker(42.3380472, -83.0625672, `<div><img src="images/tv_lounge.jpg" alt="TV Lounge" class="popup-img"><div class="popup-center"><strong>TV Lounge</strong></div><div><p>Created: 2007 ADD DESCRIPTION</p></div>
+addTimedMarker(42.3380472, -83.0625672, `<div><img src="Assets/T+V Lounge.jpg" alt="TV Lounge" class="popup-img"><div class="popup-center"><strong>TV Lounge</strong></div><div><p>Created: 2007 ADD DESCRIPTION</p></div>
   <ul>
     <li><strong>Name:</strong> TV Lounge</li>
     <li><strong>Address:</strong><br />2548 Grand River Ave, Detroit, MI 48201, USA</li>
@@ -422,7 +428,7 @@ addTimedMarker(42.3380472, -83.0625672, `<div><img src="images/tv_lounge.jpg" al
   </ul>
 </div>`, '2007-01-01 00:00:00');
 
-addTimedMarker(42.3336153, -83.0548439, `<div><img src="images/city_club.jpg" alt="Leland City Club" class="popup-img"><div class="popup-center"><strong>Leland City Club</strong></div><div><p>Created: 1983 ADD DESCRIPTION</p></div>
+addTimedMarker(42.3336153, -83.0548439, `<div><img src="Assets/City Club.jpg" alt="Leland City Club" class="popup-img"><div class="popup-center"><strong>Leland City Club</strong></div><div><p>Created: 1983 ADD DESCRIPTION</p></div>
   <ul>
     <li><strong>Name:</strong> Leland City Club</li>
     <li><strong>Address:</strong><br />400 Bagley St, Detroit, MI 48226, USA</li>
@@ -430,7 +436,7 @@ addTimedMarker(42.3336153, -83.0548439, `<div><img src="images/city_club.jpg" al
   </ul>
 </div>`, '1983-01-01 00:00:00');
 
-addTimedMarker(42.3626399, -83.0819244, `<div><img src="images/lncln_fctry.jpg" alt="The Lincoln Factory" class="popup-img"><div class="popup-center"><strong>The Lincoln Factory</strong></div><div><p>Created: 1908 ADD DESCRIPTION</p></div>
+addTimedMarker(42.3626399, -83.0819244, `<div><img src="Assets/Lincoln Factory.jpg" alt="The Lincoln Factory" class="popup-img"><div class="popup-center"><strong>The Lincoln Factory</strong></div><div><p>Created: 1908 ADD DESCRIPTION</p></div>
   <ul>
     <li><strong>Name:</strong> The Lincoln Factory</li>
     <li><strong>Address:</strong><br />1240 Holden St, Detroit, MI 48202, USA</li>
@@ -438,15 +444,19 @@ addTimedMarker(42.3626399, -83.0819244, `<div><img src="images/lncln_fctry.jpg" 
   </ul>
 </div>`, '1908-01-01 00:00:00');
 
-addTimedMarker(42.3311594, -83.0730077, `<div><img src="images/mcw.jpg" alt="Motor City Wine" class="popup-img"><div class="popup-center"><strong>Motor City Wine</strong></div><div><p>Created: (date n/a) ADD DESCRIPTION</p></div>
+addTimedMarker(42.3311594, -83.0730077, `<div>
+  <img src="Assets/Motor City Wine.jpg" alt="Motor City Wine" class="popup-img" loading="lazy"
+       style="width:100%; max-height:140px; object-fit:cover; border-radius:6px;">
+  <div class="popup-center"><strong>Motor City Wine</strong></div>
+  <div><p>Created: (date n/a) ADD DESCRIPTION</p></div>
   <ul>
     <li><strong>Name:</strong> Motor City Wine</li>
-    <li><strong>Address:</strong><br />1949 Michigan Ave, Detroit, MI 48216, USA</li>
-    <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
+    <li><strong>Address:</strong><br/>1949 Michigan Ave, Detroit, MI 48216, USA</li>
+    <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener">Website</a></li>
   </ul>
 </div>`, '2025-01-01 00:00:00');
 
-addTimedMarker(42.3338199, -83.0499098, `<div><img src="images/spkr_box.jpg" alt="SPKR BOX" class="popup-img"><div class="popup-center"><strong>SPKRBOX</strong></div><div><p>Created: 2022 ADD DESCRIPTION</p></div>
+addTimedMarker(42.3338199, -83.0499098, `<div><img src="Assets/Speaker Box.jpg" alt="SPKR BOX" class="popup-img"><div class="popup-center"><strong>SPKRBOX</strong></div><div><p>Created: 2022 ADD DESCRIPTION</p></div>
   <ul>
     <li><strong>Name:</strong> SPKRBOX</li>
     <li><strong>Address:</strong><br />1501 Holden St, Detroit, MI 48208, USA</li>
@@ -454,7 +464,7 @@ addTimedMarker(42.3338199, -83.0499098, `<div><img src="images/spkr_box.jpg" alt
   </ul>
 </div>`, '2022-01-01 00:00:00');
 
-addTimedMarker(42.3668187, -83.0767079, `<div><img src="images/northern_lights.jpg" alt="Northern Lights Lounge" class="popup-img"><div class="popup-center"><strong>Northern Lights Lounge</strong></div><div><p>Created: 2004 ADD DESCRIPTION</p></div>
+addTimedMarker(42.3668187, -83.0767079, `<div><img src="Assets/Northern Lights Lounge.jpg" alt="Northern Lights Lounge" class="popup-img"><div class="popup-center"><strong>Northern Lights Lounge</strong></div><div><p>Created: 2004 ADD DESCRIPTION</p></div>
   <ul>
     <li><strong>Name:</strong> Paramita Sound</li>
     <li><strong>Address:</strong><br />1517 Broadway St, Detroit, MI 48226, USA</li>
@@ -462,7 +472,7 @@ addTimedMarker(42.3668187, -83.0767079, `<div><img src="images/northern_lights.j
   </ul>
 </div>`, '2004-01-01 00:00:00');
 
-addTimedMarker(42.3791133, -83.0592492, `<div><img src="images/northern_lights.jpg" alt="Russell" class="popup-img"><div class="popup-center"><strong>Russell</strong></div><div><p>Created: 2004 ADD DESCRIPTION</p></div>
+addTimedMarker(42.3791133, -83.0592492, `<div><img src="Assets/russell_industrial_center.jpg" alt="Russell" class="popup-img"><div class="popup-center"><strong>Russell</strong></div><div><p>Created: 2004 ADD DESCRIPTION</p></div>
   <ul>
     <li><strong>Name:</strong> Russell</li>
     <li><strong>Address:</strong><br />1600 Clay St, Detroit, MI 48211, USA</li>
@@ -478,7 +488,7 @@ addTimedMarker(42.3440836, -83.0615332, `<div><img src="images/northern_lights.j
   </ul>
 </div>`, '2004-01-01 00:00:00');
 
-addTimedMarker(42.3754522, -83.0654343, `<div><img src="images/northern_lights.jpg" alt="Red Door" class="popup-img"><div class="popup-center"><strong>Red Door</strong></div><div><p>Created: 2004 ADD DESCRIPTION</p></div>
+addTimedMarker(42.3754522, -83.0654343, `<div><img src="Assets/red_door_digital.jpg" alt="Red Door" class="popup-img"><div class="popup-center"><strong>Red Door</strong></div><div><p>Created: 2004 ADD DESCRIPTION</p></div>
   <ul>
     <li><strong>Name:</strong> Red Door</li>
     <li><strong>Address:</strong><br />7500 Oakland Ave, Detroit, MI 48211, USA</li>
@@ -486,7 +496,7 @@ addTimedMarker(42.3754522, -83.0654343, `<div><img src="images/northern_lights.j
   </ul>
 </div>`, '2004-01-01 00:00:00');
 
-addTimedMarker(42.3511427, -83.060109, `<div><img src="images/northern_lights.jpg" alt="Magic Stick" class="popup-img"><div class="popup-center"><strong>Magic Stick</strong></div><div><p>Created: 2004 ADD DESCRIPTION</p></div>
+addTimedMarker(42.3511427, -83.060109, `<div><img src="Assets/magic_stick.jpg" alt="Magic Stick" class="popup-img"><div class="popup-center"><strong>Magic Stick</strong></div><div><p>Created: 2004 ADD DESCRIPTION</p></div>
   <ul>
     <li><strong>Name:</strong> Magic Stick</li>
     <li><strong>Address:</strong><br />4120 Woodward Ave, Detroit, MI 48201, USA</li>
@@ -507,7 +517,7 @@ sliderControl1.startSlider();    // then start it
 // Modal actions
 document.getElementById('zoom-detroit').addEventListener('click', function(e){
   e.preventDefault();
-  map.setView([42.3314, -83.0458], 14);
+  map.setView([42.3314, -83.0458], 10);
   // close modal via Bootstrap API
   var modalEl = document.getElementById('navModal');
   var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
@@ -516,7 +526,9 @@ document.getElementById('zoom-detroit').addEventListener('click', function(e){
 
 document.getElementById('fit-markers').addEventListener('click', function(e){
   e.preventDefault();
-  if (allMarkers.getLayers().length) map.fitBounds(allMarkers.getBounds().pad(0.1));
+  if (allMarkers.getLayers().length) {
+    map.fitBounds(allMarkers.getBounds(), { paddingTopLeft: [0,160], padding: [20,20] });
+  }
   var modalEl = document.getElementById('navModal');
   var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
   modal.hide();
