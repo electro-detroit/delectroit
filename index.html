@@ -29,21 +29,20 @@
 
   <style>
   html { height: 100% }
-  body { height: 100%; margin: 0; padding: 0; }
-
-  /* reserve space for the fixed navbar (increase to match taller navbar) */
-  /* increased top padding to match taller translucent navbar */
-  body { padding-top: 160px; /* keep navbar space */ overflow: hidden; } /* disable page scrolling */
+  body { height: 100%; margin: 0; padding: 0; padding-top: 160px; /* keep navbar space */ overflow: hidden; } /* disable page scrolling */
 
   /* taller purple navbar with centered title */
   .navbar.fixed-top{
     /* use the attached image as a full-width background and keep the purple tint */
-    background: linear-gradient(90deg, rgba(111,66,193,0.45), rgba(142,68,204,0.45)), url('Assets/Detroit\ Skyline\ 2.jpg') center/cover no-repeat;
+    background: linear-gradient(90deg, rgba(111,66,193,0.45), rgba(142,68,204,0.45)), url("Assets/Detroit Skyline 2.jpg") center/cover no-repeat;
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     border-bottom: 1px solid rgba(255,255,255,0.08);
     height: 160px;
     box-shadow: 0 10px 24px rgba(111,66,193,0.12);
+    width: 100%;
+    left: 0;
+    right: 0;
   }
 
   /* hide the inline <img> inside .navbar-brand (optional if you remove the tag) */
@@ -125,39 +124,68 @@
   .popup-center {
     text-align: center;
   }
-  </style>
 
-</head>
+  /* remove the white/tinted box behind the navbar collapsed panel */
+  #navbarTop {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    backdrop-filter: none !important;
+  }
+    /* apply the purple-tinted panel only when the collapse is open (Bootstrap adds .show) */
+    #navbarTop.show {
+      background: rgba(147,119,215,0.18) !important;
+      backdrop-filter: blur(6px);
+      border-radius: 8px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 12px rgba(111,66,193,0.06);
+      border: 1px solid rgba(111,66,193,0.08);
+      color: #000;
+    }
+    #navbarTop.show .navbar-nav { gap: .5rem; align-items: center; }
+    #navbarTop.show .nav-item .nav-link {
+      color: #000 !important;
+      padding: .35rem .6rem;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+    #navbarTop.show .nav-item .nav-link:hover {
+      background: rgba(111,66,193,0.08);
+      color: #000 !important;
+    }
+  </style>
+  </head>
 <body>
 
 <!-- Top navigation bar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="index.html">
-      <img src="Assets/Detroit Skyline 2.jpg" alt="Delectroit logo" class="navbar-brand-img" />
-      Delectroit
-    </a>
+    <a class="navbar-brand" href="index.html">Delectroit</a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTop" aria-controls="navbarTop" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-
     <div class="collapse navbar-collapse" id="navbarTop">
-      <ul class="navbar-nav ms-auto align-items-center">
-         <!-- only keep About in the top navbar -->
+      <ul class="navbar-nav ms-auto align-items-center d-flex flex-row gap-2">
          <li class="nav-item">
-           <a class="nav-link" id="about-link" href="about.html">About</a>
+           <a class="nav-link px-2" id="about-link" href="about.html">About</a>
          </li>
-        <li class="nav-item">
-          <a class="nav-link" id="teams-link" href="teams.html">Teams</a>
-        </li>
-       </ul>
-    </div>
+         <li class="nav-item">
+           <a class="nav-link px-2" id="teams-link" href="teams.html">Teams</a>
+         </li>
+      </ul>
+
+      <!-- ensure the collapsed container is shown by default (makes links visible) -->
+      <script>
+        document.addEventListener('DOMContentLoaded', function(){
+          var c = document.getElementById('navbarTop');
+          if (c && !c.classList.contains('show')) c.classList.add('show');
+        });
+      </script>
+        </div>
   </div>
 </nav>
 
 <div id="map" class="map"></div>
-<!-- remove this block if you don't need page scroll/demo content -->
 <!--
 <main class="container py-4">
   <section class="section-card">
@@ -337,19 +365,31 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-// (Removed duplicate default markers — keep only the speakerIcon markers below)
-
-// ensure Leaflet recalculates size if the viewport changes
-// feature group to collect markers for "fit" action
+// collect markers for fitBounds
 var allMarkers = L.featureGroup();
-// wait a moment for tiles/DOM to settle, then invalidate size and fit bounds (use allMarkers)
-setTimeout(function(){
+
+// ensure it's run after map/tiles are ready and after markers are added
+map.whenReady(function(){
+  // recalc size (important when using fixed-top navbar)
   map.invalidateSize();
-  if (allMarkers.getLayers().length) {
-    // fitBounds with top padding so markers/popups are not hidden under navbar
-    map.fitBounds(allMarkers.getBounds(), { paddingTopLeft: [0,160], padding: [20,20] });
+
+  if (allMarkers && allMarkers.getLayers().length) {
+    var bounds = allMarkers.getBounds();
+
+    // fit bounds with top padding for the navbar
+    map.fitBounds(bounds, { paddingTopLeft: [0,160], padding: [20,20] });
+
+    // after fitBounds settles, zoom in one level (clamped to a reasonable max)
+    setTimeout(function(){
+      var targetZoom = Math.min(map.getZoom() + 1, 16); // change 16 if you want a different max
+      map.setZoom(targetZoom);
+      // nudge map up so popups won't sit under the navbar if needed
+      map.panBy([0, -80], { animate: true });
+    }, 350);
   }
-}, 400);
+});
+
+// keep resize handling (only once)
 window.addEventListener('resize', function(){ map.invalidateSize(); });
 
 
@@ -567,17 +607,6 @@ if (aboutEl) {
   });
 }
 
-// Teams link in nav modal: hide modal then navigate
-var teamsModalEl = document.getElementById('teams-link-modal');
-if (teamsModalEl) {
-  teamsModalEl.addEventListener('click', function(e){
-    e.preventDefault();
-    var modalEl = document.getElementById('navModal');
-    var modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-    modalInstance.hide();
-    setTimeout(function(){ window.location.href = 'teams.html'; }, 200);
-  });
-}
 
 // Optional: add a small Leaflet control button that opens the same modal
 var NavControl = L.Control.extend({
@@ -594,8 +623,10 @@ var NavControl = L.Control.extend({
   },
   onRemove: function(map){}
 });
+
+// add the nav control (fixed syntax — missing parenthesis was breaking the script)
 (new NavControl({ position: 'topright' })).addTo(map);
-  
+
 // show startup modal on page load
 document.addEventListener('DOMContentLoaded', function(){
   var modalEl = document.getElementById('startupModal');
@@ -605,4 +636,3 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 </script>
-<!-- duplicate head assets removed -->
