@@ -583,6 +583,29 @@ addTimedMarker(42.3511427, -83.060109, `<div><img src="Assets/magic_stick.jpg" a
   </ul>
 </div>`, '1991');
 
+// Initialize the time slider control
+var sliderControl = L.control.sliderControl({
+  position: 'topright',
+  layer: sliderLayer, //this is the layer group we created earlier
+  timeAttribute: 'time',
+  isEpoch: false,
+  showAllOnStart: true,
+  range: false,
+  followTime: true,
+  alwaysShowDate: true,
+  dateFormat: 'YYYY',
+  speedSlider: false,
+  autoPlay: false,
+  maxSpeed: 2000,
+  step: 1
+});
+
+// this adds the slider control to the map
+map.addControl(sliderControl);
+
+//this starts the slider
+sliderControl.startSlider();
+
 // Modal actions
 document.getElementById('zoom-detroit').addEventListener('click', function(e){
   e.preventDefault();
