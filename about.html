@@ -18,12 +18,31 @@
     .section-card { border-radius:10px; border:1px solid #e9dff8; background:#fbf7ff; padding:18px; margin-bottom:16px; }
     footer { margin: 28px 0 48px; color:#5a3b83; font-size:13px; text-align:center; }
     a.btn-back { background:#6f42c1; color:#fff; border:0; }
+
+    /* Reveal on scroll */
+    .reveal { opacity:0; transform: translateY(10px); transition: opacity .45s ease, transform .45s ease; will-change: opacity, transform; }
+    .reveal.visible { opacity:1; transform: none; }
+
+    /* Dark mode */
+    body.dark { background:#0f0b16; color:#e8def8; }
+    body.dark .section-card { background:#1a1424; border-color:#30223f; }
+    body.dark .navbar.fixed-top { box-shadow: 0 6px 18px rgba(0,0,0,0.5); }
+    /* search removed */
+    mark.match { background: #ffe58a; color:#291b00; padding:0 .15rem; border-radius:2px; }
   </style>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
     <div class="container-fluid">
       <a class="navbar-brand" href="index.html">Delectroit</a>
+
+      <!-- Theme toggle & small controls -->
+      <div class="d-flex align-items-center" style="gap:8px; position:absolute; left:14px; top:50%; transform:translateY(-50%);">
+        <button id="theme-toggle" class="btn btn-sm btn-outline-light" title="Toggle theme" aria-pressed="false">
+          <i class="bi bi-moon-fill" id="theme-icon"></i>
+        </button>
+      </div>
+
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTop" aria-controls="navbarTop" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -39,47 +58,76 @@
   <main class="container py-4">
     <header class="mb-4">
       <h1 class="h3">About Delectroit</h1>
-      <p class="lead mb-0">An interactive map documenting sound-art venues, installations, and related places across Detroit.</p>
+      <p class="lead mb-2">An interactive map documenting sound-art venues, installations, and related places across Detroit.</p>
+
+      <!-- Search removed -->
+
     </header>
 
-    <section class="section-card" aria-labelledby="overview-heading">
+    <section class="section-card reveal" aria-labelledby="overview-heading">
       <h2 id="overview-heading" class="h5 mb-2">Overview</h2>
       <p class="mb-0">Delectroit is a small mapping project that highlights locations connected to Detroit's sound-art community. Use the map to explore venues and public installations, click markers for details, and use the Menu to zoom or fit all markers.</p>
     </section>
 
     <!-- Credits and Data & licensing moved to bottom -->
 
-    <section class="section-card" aria-labelledby="narrative-heading">
+    <section class="section-card reveal" aria-labelledby="narrative-heading">
       <h2 id="narrative-heading" class="h5 mb-2">Narrative</h2>
       <!-- Add narrative text here -->
+       <p>Across Detroit, each repurposed venue becomes a layered soundscape where history, architecture, and community practice converge. When Hart Plaza opened in 1975, 
+       its riverfront concrete transformed a proposed civic centre into a civic sound field, highlighting how scholars describe “historical soundscapes” as archives of collective memory that reveal 
+       urban identities. Similarly, the Marble Bar’s shift from an LGBTQ+ leather bar to a live‑music venue illustrates how “soundmarks of the past” are re‑inscribed, a process identified in studies 
+       of Castilian cities where normative sound regulations once shaped spatial identity.  
+<p>Spot Lite Detroit, launched by a first‑generation immigrant, mirrors the “multi‑sensorial stimulus” approach used in Jakarta’s Fatahillah Square analysis, where soundwalks and recalled memories 
+redefine historic places. Tangent Gallery & Hastings Street Ballroom’s endurance as an avant‑garde hub reflects the “sociocultural construction of soundscape” noted in Pompeii’s theatres, where 
+architectural form dictates acoustic experience. </p>
+The Lincoln Factory’s conversion from auto production to a music venue exemplifies the “place‑making” strategy outlined for industrial heritage sites, where soundscape design links tangible and 
+intangible heritage. Research on historic districts shows that intentional sound selection, control, and “sensing routes” can restore a “historical sense” and authenticity, countering luxury‑condo 
+onversion. Together, these narratives demonstrate that urban venues are not static shells or sites but evolving acoustic commons, where sound deliberately reshapes space, memory, and social belonging.</p>
+
       <p class="mb-0"></p>
     </section>
 
-    <section class="section-card" aria-labelledby="dataused-heading">
+    <section class="section-card reveal" aria-labelledby="dataused-heading">
       <h2 id="dataused-heading" class="h5 mb-2">Data Used</h2>
-      <!-- Add dataset descriptions, sources, formats here -->
+      <!-- Add dataset descrsiptions, sources, formats here --><p><strong>Scholarly Resources:</strong> Academic articles and research papers provided theoretical frameworks and historical context for understanding Detroit's sonic spaces and helping build our narrative.</p>
+      <p><strong>Venue Documentation:</strong> The official websites of venues and locations offered operational details, programming information, and institutional histories.</p>
+      <p><strong>Public Data:</strong> We utilized datasets from Detroit Data (detroitdata.org) to identify and verify location information after making our decision to focus on Detroit as our geographic area of study.</p>
       <p class="mb-0"></p>
     </section>
 
-    <section class="section-card" aria-labelledby="methodology-heading">
+    <section class="section-card reveal" aria-labelledby="methodology-heading">
       <h2 id="methodology-heading" class="h5 mb-2">Methodology</h2>
-      <!-- Describe collection, verification, processing methods here -->
+      <!-- Describe collection, verification, processing methods here --><p><strong>Framework:</strong> Bootstrap
+
+<p><strong>Library:</strong> Leaflet.js enabled interactive mapping features </p>
+
+<p><strong>Division of Labor:</strong> Each team member researched, coded, and documented five locations</p>
+
+<p><strong>Navigation Structure:</strong> We created an integrated site architecture including:</p>
+
+<ul>
+  <li>Interactive map interface (main page)</li>
+  <li>About section (project context and objectives)</li>
+  <li>Teams page (contributor information)</li>
+  <li>Unified navigation bar linking all sections</li>
+</ul>
+</p>
       <p class="mb-0"></p>
     </section>
 
-    <section class="section-card" aria-labelledby="biblio-heading">
+    <section id="biblio" class="section-card reveal" aria-labelledby="biblio-heading">
       <h2 id="biblio-heading" class="h5 mb-2">Bibliography</h2>
-      <!-- List references and citations here -->
-      <p class="mb-0"></p>
+      <ul id="biblio-list" class="mb-0"></ul>
     </section>
      
-    <section class="section-card" aria-labelledby="credits-heading">
+    <section class="section-card reveal" aria-labelledby="credits-heading">
       <h2 id="credits-heading" class="h5 mb-2">Credits</h2>
       <p class="mb-2">Created by the Delectroit project team. Map tiles: OpenStreetMap contributors. UI uses Bootstrap and Leaflet.</p>
       <p class="mb-0"><strong>Version:</strong> 1.0 • <strong>Year:</strong> 2021</p>
     </section>
 
-    <section class="section-card" aria-labelledby="data-heading">
+    <section class="section-card reveal" aria-labelledby="data-heading">
       <h2 id="data-heading" class="h5 mb-2">Data & licensing</h2>
       <p class="mb-0">Location data and images are provided for informational purposes. If you are the owner of a listed venue and would like edits or removal, please contact the project.</p>
     </section>
@@ -168,6 +216,122 @@
       });
     }
   } catch(e){}
+</script>
+
+<script>
+  (function(){
+    // Embedded dynamic data (fallback). Optionally replace by fetching /data/about.json
+    const fallbackData = {
+      version: "1.0",
+      year: "2021",
+      lastUpdated: "2024-11-01",
+      contributors: [
+        { name: "Ayaat Ismail", role: "Research & mapping", email: "ayaat@example.com" },
+        { name: "Sam Taylor", role: "Frontend & data", email: "sam@example.com" }
+      ],
+      bibliography: [
+        "Author A. (2018). Soundscapes and urban memory. Journal of Acoustic Studies.",
+        "Author B. (2020). Place-making in industrial heritage. Urban History Review."
+      ]
+    };
+
+    // Try to fetch external JSON (non-blocking); fall back to embedded
+    let data = fallbackData;
+    fetch('data/about.json').then(r => {
+      if (r.ok) return r.json();
+      throw new Error('no json');
+    }).then(j => { data = Object.assign({}, fallbackData, j); render(data); })
+    .catch(() => { render(data); });
+
+    function render(d){
+      // populate version/year/updated
+      const elV = document.getElementById('version');
+      const elY = document.getElementById('year');
+      const elU = document.getElementById('last-updated');
+      if (elV) elV.textContent = d.version || elV.textContent;
+      if (elY) elY.textContent = d.year || elY.textContent;
+      if (elU) elU.textContent = d.lastUpdated || elU.textContent;
+
+      // contributors
+      const cList = document.getElementById('contributors-list');
+      if (cList && d.contributors && d.contributors.length){
+        cList.innerHTML = d.contributors.map(c => {
+          const mail = c.email ? ` <a href="mailto:${c.email}" title="Email ${c.name}">✉</a>` : '';
+          return `<li><strong>${escapeHtml(c.name)}</strong> — <small>${escapeHtml(c.role)}</small>${mail}</li>`;
+        }).join('');
+      }
+
+      // bibliography
+      const bList = document.getElementById('biblio-list');
+      if (bList && d.bibliography && d.bibliography.length){
+        bList.innerHTML = d.bibliography.map(b => `<li>${escapeHtml(b)}</li>`).join('');
+      }
+    }
+
+    // small helpers
+    function escapeHtml(s){ return String(s).replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; }); }
+
+    // Active nav link highlight
+    (function highlightActive(){
+      try {
+        const path = location.pathname.split('/').pop() || 'index.html';
+        document.querySelectorAll('.nav-link').forEach(a=>{
+          const href = a.getAttribute('href') || '';
+          if (href.split('/').pop() === path) a.classList.add('active');
+        });
+      } catch(e){}
+    })();
+
+    // search removed
+
+    // Reveal on scroll
+    const reveals = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window && reveals.length){
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            obs.unobserve(e.target);
+          }
+        });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+      reveals.forEach(r => obs.observe(r));
+    } else {
+      reveals.forEach(r => r.classList.add('visible'));
+    }
+
+    // Theme toggle (dark mode) persisted
+    const themeBtn = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const applyTheme = (dark) => {
+      document.body.classList.toggle('dark', dark);
+      if (themeIcon) themeIcon.className = dark ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+      if (themeBtn) themeBtn.setAttribute('aria-pressed', String(!!dark));
+    };
+    try {
+      const stored = localStorage.getItem('delectroit-theme');
+      const initialDark = stored ? stored === 'dark' : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      applyTheme(initialDark);
+    } catch(e){}
+    if (themeBtn){
+      themeBtn.addEventListener('click', function(){
+        const dark = !document.body.classList.contains('dark');
+        applyTheme(dark);
+        try { localStorage.setItem('delectroit-theme', dark ? 'dark' : 'light'); } catch(e){}
+      });
+    }
+
+    // small accessibility: pressing 'm' toggles nav modal
+    window.addEventListener('keydown', function(e){
+      if (e.key === 'm' && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) {
+        const modalEl = document.getElementById('navModal');
+        if (!modalEl) return;
+        const modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+        modalInstance.toggle();
+      }
+    });
+
+  })();
 </script>
 </body>
 </html>
