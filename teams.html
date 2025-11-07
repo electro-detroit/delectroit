@@ -24,12 +24,27 @@
     .avatar-initials { font-weight:700; color:#6b3ea8; font-size:18px; }
     .member-meta { flex:1; }
     .member-role { color:#6f42c1; font-weight:600; margin-bottom:6px; }
+
+    /* dark mode styles (added) */
+    body.dark { background:#0f0b16; color:#e8def8; }
+    body.dark .member-card { background:#1a1424; border-color:#30223f; }
+    body.dark .member-avatar { background:#2a2035; color:#e8def8; }
+    body.dark .member-role { color:#d6b8ff; }
+    body.dark .navbar.fixed-top { box-shadow: 0 6px 18px rgba(0,0,0,0.5); }
   </style>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
     <div class="container-fluid">
       <a class="navbar-brand" href="index.html">Delectroit</a>
+
+      <!-- theme toggle -->
+      <div class="d-flex align-items-center" style="gap:8px; position:absolute; left:14px; top:50%; transform:translateY(-50%);">
+        <button id="theme-toggle" class="btn btn-sm btn-outline-light" title="Toggle theme" aria-pressed="false">
+          <i class="bi bi-moon-fill" id="theme-icon"></i>
+        </button>
+      </div>
+      
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTop" aria-controls="navbarTop" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -179,6 +194,35 @@
         });
       }
     } catch(e){}
+  </script>
+
+  <!-- theme toggle logic -->
+  <script>
+    (function(){
+      const themeBtn = document.getElementById('theme-toggle');
+      const themeIcon = document.getElementById('theme-icon');
+
+      function applyTheme(dark){
+        document.body.classList.toggle('dark', !!dark);
+        if (themeIcon) themeIcon.className = dark ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+        if (themeBtn) themeBtn.setAttribute('aria-pressed', String(!!dark));
+      }
+
+      try {
+        const stored = localStorage.getItem('delectroit-theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const initial = stored ? stored === 'dark' : prefersDark;
+        applyTheme(initial);
+      } catch(e){ /* ignore storage errors */ }
+
+      if (themeBtn) {
+        themeBtn.addEventListener('click', function(){
+          const dark = !document.body.classList.contains('dark');
+          applyTheme(dark);
+          try { localStorage.setItem('delectroit-theme', dark ? 'dark' : 'light'); } catch(e){}
+        });
+      }
+    })();
   </script>
 </body>
 </html>

@@ -29,7 +29,7 @@
 
   <style>
   html { height: 100% }
-  body { height: 100%; margin: 0; padding: 0; padding-top: 160px; /* keep navbar space */ overflow: hidden; } /* disable page scrolling */
+  body { height: 100%; margin: 0; padding: 0; padding-top: 160px; /* keep navbar space */ } 
 
   /* taller purple navbar with centered title */
   .navbar.fixed-top{
@@ -151,6 +151,75 @@
     #navbarTop.show .nav-item .nav-link:hover {
       background: rgba(111,66,193,0.08);
       color: #000 !important;
+    }
+
+    /* Purple slider styles (SliderControl / jQuery UI / range fallback */
+    .leaflet-control-slider,
+    .slider-control,
+    .leaflet-control.slider-control {
+      background: rgba(255,255,255,0.03);
+      padding: 8px;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(111,66,193,0.06);
+      color: #3a0f52;
+    }
+
+    /* jQuery UI track */
+    .slider-control .ui-slider,
+    .leaflet-control-slider .ui-slider {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(111,66,193,0.08);
+    }
+
+    /* filled range */
+    .slider-control .ui-slider-range,
+    .leaflet-control-slider .ui-slider-range {
+      background: linear-gradient(90deg, #a06ee9 0%, #6f42c1 100%) !important;
+      box-shadow: 0 6px 18px rgba(111,66,193,0.12);
+      border-radius: 999px;
+    }
+
+    /* jQuery UI handle */
+    .slider-control .ui-slider-handle,
+    .leaflet-control-slider .ui-slider-handle {
+      width: 18px;
+      height: 18px;
+      margin-top: -5px;
+      background: #6f42c1 !important;
+      border: 2px solid #ffffff;
+      box-shadow: 0 6px 18px rgba(111,66,193,0.18);
+      border-radius: 50%;
+    }
+
+    /* HTML5 range fallback */
+    .leaflet-control-slider input[type="range"],
+    .slider-control input[type="range"] {
+      -webkit-appearance: none;
+      height: 8px;
+      background: rgba(111,66,193,0.08);
+      border-radius: 999px;
+    }
+    .leaflet-control-slider input[type="range"]::-webkit-slider-thumb,
+    .slider-control input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #6f42c1;
+      border: 2px solid #fff;
+      box-shadow: 0 6px 18px rgba(111,66,193,0.18);
+      margin-top: -5px;
+    }
+
+    /* date / label */
+    .leaflet-control-slider .date,
+    .slider-control .date,
+    .leaflet-control-slider .current-date {
+      color: #40105a;
+      font-weight: 600;
+      padding-left: 8px;
+      background: transparent;
     }
   </style>
   </head>
@@ -350,6 +419,10 @@
     try {
       if (localStorage.getItem('hideStartupModal') === 'true') {
         modalEl.parentNode && modalEl.parentNode.removeChild(modalEl);
+      } else {
+        // show the modal on first load (Bootstrap 5)
+        var modalInstance = new bootstrap.Modal(modalEl);
+        modalInstance.show();
       }
     } catch(e){}
   });
@@ -368,32 +441,12 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 // collect markers for fitBounds
 var allMarkers = L.featureGroup();
 
-// ensure it's run after map/tiles are ready and after markers are added
-map.whenReady(function(){
-  // recalc size (important when using fixed-top navbar)
-  map.invalidateSize();
+// (removed duplicate whenReady here — initial fit/zoom is handled later after markers & slider are added)
 
-  if (allMarkers && allMarkers.getLayers().length) {
-    var bounds = allMarkers.getBounds();
+  // keep resize handling (only once)
+  window.addEventListener('resize', function(){ map.invalidateSize(); });
 
-    // fit bounds with top padding for the navbar
-    map.fitBounds(bounds, { paddingTopLeft: [0,160], padding: [20,20] });
-
-    // after fitBounds settles, zoom in one level (clamped to a reasonable max)
-    setTimeout(function(){
-      var targetZoom = Math.min(map.getZoom() + 1, 16); // change 16 if you want a different max
-      map.setZoom(targetZoom);
-      // nudge map up so popups won't sit under the navbar if needed
-      map.panBy([0, -80], { animate: true });
-    }, 350);
-  }
-});
-
-// keep resize handling (only once)
-window.addEventListener('resize', function(){ map.invalidateSize(); });
-
-
-// Use a Bootstrap Icon inside a divIcon
+  // Use a Bootstrap Icon inside a divIcon
 const biHtml = `<i class="bi bi-speaker-fill bi-marker" aria-hidden="true"></i>`;
 const speakerIcon = L.divIcon({
   className: '',           // keep empty so only our <i> styles apply
@@ -527,13 +580,15 @@ addTimedMarker(42.3311594, -83.0730077, `<div>
   <img src="Assets/Motor City Wine.jpg" alt="Motor City Wine" class="popup-img" loading="lazy"
        style="width:100%; max-height:140px; object-fit:cover; border-radius:6px;">
   <div class="popup-center"><strong>Motor City Wine</strong></div>
-  <div><p>Created: 2013
-    <p> Motor City Wine challenged who gets to claim certain kinds of nighttime space in Detroit. When owners David and Melissa Armin-Parcells moved from a temporary
+  <div>
+    <p>Created: 2013</p>
+    <p>Motor City Wine challenged who gets to claim certain kinds of nighttime space in Detroit. When owners David and Melissa Armin-Parcells moved from a temporary
      downtown spot to Corktown's former Express Bar in 2013, expanding to 2,000 square feet with outdoor patio and parking, they brought small-producer, organic-focused wine culture into 
      historically blue-collar territory. By hosting musicians and DJs alongside wine service, the venue contested the idea that "highbrow" leisure and working-class neighborhoods are incompatible.
       Motor City Wine navigated Corktown's contested transformation by arguing that nightlife diversity, from techno clubs to wine bars, strengthens rather than displaces community identity, 
       reimagining who belongs in spaces of cultural consumption.
-/p></div>
+    </p>
+  </div>
   <ul>
     <li><strong>Name:</strong> Motor City Wine</li>
     <li><strong>Address:</strong><br/>1949 Michigan Ave, Detroit, MI 48216, USA</li>
@@ -662,7 +717,7 @@ var sliderControl = L.control.sliderControl({
   isEpoch: false,
   showAllOnStart: true,
   range: false,
-  followTime: false,       // don't auto-open the marker popup for the current time
+  followTime: true,
   alwaysShowDate: true,
   dateFormat: 'YYYY',
   speedSlider: false,
@@ -677,19 +732,22 @@ map.addControl(sliderControl);
 //this starts the slider
 sliderControl.startSlider();
 
-/*
-  Make initial zoom a bit closer than fitBounds, but clamp so we don't overzoom.
-  (User asked for a closer initial map.)
-*/
+// Consolidated map.whenReady: run once after slider + markers present
 map.whenReady(function(){
-  if (allMarkers && allMarkers.getLayers().length) {
-    map.fitBounds(allMarkers.getBounds(), { paddingTopLeft: [0,160], padding: [20,20] });
-    setTimeout(function(){
-      // closer start: +2 levels but clamp to 14 (adjust if you want different closeness)
-      var targetZoom = Math.min(map.getZoom() + 2, 14);
-      map.setZoom(targetZoom);
-      map.panBy([0, -80], { animate: true });
-    }, 350);
+  // recalc size (important when using fixed-top navbar)
+  try { map.invalidateSize(); } catch(e){}
+
+  if (allMarkers && allMarkers.getLayers && allMarkers.getLayers().length) {
+    try {
+      map.fitBounds(allMarkers.getBounds(), { paddingTopLeft: [0,160], padding: [20,20] });
+      setTimeout(function(){
+        var targetZoom = Math.min(map.getZoom() + 2, 14);
+        map.setZoom(targetZoom);
+        map.panBy([0, -80], { animate: true });
+      }, 350);
+    } catch(err){
+      console.warn('fitBounds failed (no valid bounds)', err);
+    }
   }
 });
 
@@ -733,160 +791,40 @@ map.on('popupopen', function(e){
     var source = popup && popup._source;
     if (!source) return;
 
-    // if marker has a time, set slider to it (best-effort)
+    // set slider time if marker has one (best-effort)
     var t = (source.options && source.options.time) || (source.time || null);
     if (t) setSliderTime(t);
 
-    // ensure popup is clearly visible: pan to marker then nudge up (account for navbar)
+    // ensure popup is visible without forcing an immediate zoom change
     var latlng = (typeof source.getLatLng === 'function') ? source.getLatLng() : null;
     if (latlng) {
-      // if current zoom is low, zoom closer a bit
-      var minZoomForPopup = 13;
-      if (map.getZoom() < minZoomForPopup) map.setZoom(minZoomForPopup);
+      // gently center the marker and nudge up to account for the fixed navbar
       map.panTo(latlng, { animate: true });
-      // nudge so popup sits under the navbar
-      setTimeout(function(){ map.panBy([0, -100], { animate: true }); }, 220);
+      setTimeout(function(){ try { map.panBy([0, -80], { animate: true }); } catch(e){} }, 220);
     }
   } catch(err){ console.warn('popupopen handler error', err); }
 });
-
-/*
-  If the slider UI emits DOM 'input' or plugin events, detect them and open the corresponding marker popup
-  so map movement and popups stay in sync while the slider moves.
-*/
-(function attachSliderDomListeners(){
-  // try a few selector candidates that SliderControl implementations might use
-  var selectors = [
-    '.leaflet-control-slider input[type="range"]',
-    '.slider-control input[type="range"]',
-    '.leaflet-slider input[type="range"]',
-    '.slider-control .ui-slider-handle',
-    '.slider-control'
-  ];
-
-  function handleSliderValue(val){
-    if (!val) return;
-    // find first marker with matching time (string match)
-    var match = pendingMarkers.find(function(p){ return String(p.time) === String(val); });
-    if (match && match.marker) {
-      // open popup (popupopen handler will handle panning and syncing)
-      match.marker.openPopup();
-    }
-  }
-
-  // attach event listeners on any matching elements we find
-  selectors.forEach(function(sel){
-    var el = document.querySelector(sel);
-    if (!el) return;
-    // if it's an input range
-    if (el.tagName && el.tagName.toLowerCase() === 'input') {
-      el.addEventListener('input', function(ev){ handleSliderValue(ev.target.value); });
-      el.addEventListener('change', function(ev){ handleSliderValue(ev.target.value); });
-    } else {
-      // listen for generic events the plugin might emit
-      el.addEventListener('mousemove', function(){ 
-        var v = el.getAttribute && el.getAttribute('aria-valuenow') || el.value || el.textContent || null;
-        handleSliderValue(v);
-      });
-      el.addEventListener('click', function(){ 
-        var v = el.getAttribute && el.getAttribute('aria-valuenow') || el.value || el.textContent || null;
-        handleSliderValue(v);
-      });
-    }
-  });
-
-  // As a final fallback, observe DOM changes inside the control and react when a numeric/text value appears
-  var controlContainer = document.querySelector('.leaflet-control.slider-control, .leaflet-control-slider, .slider-control');
-  if (controlContainer && window.MutationObserver) {
-    var mo = new MutationObserver(function(muts){
-      for (var i=0;i<muts.length;i++){
-        var m = muts[i];
-        if (m.type === 'childList' || m.type === 'characterData') {
-          // attempt to read a numeric/year-like string from the control
-          var text = controlContainer.textContent.trim().match(/\b(18|19|20)\d{2}\b/);
-          if (text && text[0]) handleSliderValue(text[0]);
-        }
-      }
-    });
-    mo.observe(controlContainer, { childList: true, subtree: true, characterData: true });
-  }
-})();
-
-/*
-  When user clicks a marker we already try to set the slider; ensure that continues to work:
-  (this was already in place but leaving a defensive rebind to guarantee sync)
-*/
-pendingMarkers.forEach(function(p){
-  p.marker.off && p.marker.off('click'); // in case of previous bindings
-  p.marker.on('click', function(){
-    var t = (p.marker.options && p.marker.options.time) || p.time;
-    if (t) setSliderTime(t);
-    // openPopup will trigger popupopen handler which pans the map
-    setTimeout(function(){ p.marker.openPopup(); }, 40);
-  });
-});
-
-// Modal actions
-document.getElementById('zoom-detroit').addEventListener('click', function(e){
-  e.preventDefault();
-  map.setView([42.3314, -83.0458], 10);
-  // close modal via Bootstrap API
-  var modalEl = document.getElementById('navModal');
-  var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-  modal.hide();
-});
-
-document.getElementById('fit-markers').addEventListener('click', function(e){
-  e.preventDefault();
-  if (allMarkers.getLayers().length) {
-    map.fitBounds(allMarkers.getBounds(), { paddingTopLeft: [0,160], padding: [20,20] });
-  }
-  var modalEl = document.getElementById('navModal');
-  var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-  modal.hide();
-});
-
-// About link in top navbar: close nav modal if open then navigate
-var aboutEl = document.getElementById('about-link');
-if (aboutEl) {
-  aboutEl.addEventListener('click', function(e){
-    e.preventDefault();
-    var modalEl = document.getElementById('navModal');
-    if (modalEl) {
-      var modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-      modalInstance.hide();
-    }
-    setTimeout(function(){ window.location.href = 'about.html'; }, 200);
-  });
-}
-
-
-// Optional: add a small Leaflet control button that opens the same modal
-var NavControl = L.Control.extend({
-  onAdd: function(map){
-    var btn = L.DomUtil.create('button', 'btn btn-sm btn-primary');
-    btn.innerHTML = 'Menu';
-    btn.style.margin = '6px';
-    btn.onclick = function(){
-      var modalEl = document.getElementById('navModal');
-      var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-      modal.show();
-    };
-    return btn;
-  },
-  onRemove: function(map){}
-});
-
-// add the nav control (fixed syntax — missing parenthesis was breaking the script)
-(new NavControl({ position: 'topright' })).addTo(map);
-
-// show startup modal on page load
-document.addEventListener('DOMContentLoaded', function(){
-  var modalEl = document.getElementById('startupModal');
-  if (modalEl) {
-    var modal = new bootstrap.Modal(modalEl);
-    modal.show();
-  }
-});
 </script>
-</body>
+
+<script>
+  // Force Leaflet to recalc layout after everything has loaded,
+  // and print basic diagnostic info to the console.
+  window.addEventListener('load', function(){
+    try {
+      var mapEl = document.getElementById('map');
+      console.log('#map element:', mapEl);
+      if (mapEl) console.log('#map rect:', mapEl.getBoundingClientRect());
+    } catch(e){}
+
+    if (window.map && typeof map.invalidateSize === 'function') {
+      try { map.invalidateSize(); } catch(e){}
+      // a second call after a short delay often fixes timing/layout race issues
+      setTimeout(function(){ try { map.invalidateSize(); } catch(e){} }, 300);
+      console.log('map.invalidateSize() called');
+      try { console.log('map.getCenter():', map.getCenter(), 'zoom:', map.getZoom()); } catch(e){}
+      try { console.log('allMarkers count:', allMarkers && allMarkers.getLayers && allMarkers.getLayers().length); } catch(e){}
+    } else {
+      console.warn('window.map is not defined or invalidateSize() unavailable');
+    }
+  });
+</script>
