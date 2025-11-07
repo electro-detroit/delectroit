@@ -153,66 +153,96 @@
       color: #000 !important;
     }
 
-    /* Purple slider styles (SliderControl / jQuery UI / range fallback */
+    /* Purple slider styles (SliderControl / jQuery UI / range fallback)
+       Stronger overrides: force visible, fixed above map (so it cannot be clipped),
+       keep purple look and make it very wide. */
     .leaflet-control-slider,
     .slider-control,
     .leaflet-control.slider-control {
-      background: rgba(255,255,255,0.03);
-      padding: 8px;
-      border-radius: 10px;
-      box-shadow: 0 6px 18px rgba(111,66,193,0.06);
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+
+      /* use fixed positioning so the control bypasses any Leaflet container clipping */
+      position: fixed !important;
+      top: calc(160px + 12px) !important; /* place below your 160px header */
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+
+      /* purple panel look */
+      background: linear-gradient(90deg, rgba(111,66,193,0.16), rgba(142,68,204,0.12));
+      padding: 12px 18px;
+      border-radius: 14px;
+      border: 1px solid rgba(111,66,193,0.14);
+      box-shadow: 0 14px 50px rgba(111,66,193,0.18);
       color: #3a0f52;
+      pointer-events: auto;
+
+      /* make the slider very wide but responsive */
+      width: min(1400px, calc(100% - 96px)) !important;
+      max-width: calc(100% - 96px) !important;
+      box-sizing: border-box;
+
+      z-index: 99999 !important; /* ensure on top of everything */
     }
 
-    /* jQuery UI track */
+    /* also override any Leaflet container rules that might re-position/clip it */
+    .leaflet-top .leaflet-control-slider,
+    .leaflet-bottom .leaflet-control-slider {
+      position: fixed !important;
+      top: calc(160px + 12px) !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      width: min(1400px, calc(100% - 96px)) !important;
+      z-index: 99999 !important;
+    }
+
+    /* track / handle styling kept purple and prominent */
     .slider-control .ui-slider,
     .leaflet-control-slider .ui-slider {
-      height: 8px;
+      height: 14px;
       border-radius: 999px;
-      background: rgba(111,66,193,0.08);
+      background: linear-gradient(90deg, rgba(111,66,193,0.10), rgba(142,68,204,0.07));
+      width: 100%;
+      margin: 8px 0;
     }
 
-    /* filled range */
-    .slider-control .ui-slider-range,
-    .leaflet-control-slider .ui-slider-range {
-      background: linear-gradient(90deg, #a06ee9 0%, #6f42c1 100%) !important;
-      box-shadow: 0 6px 18px rgba(111,66,193,0.12);
-      border-radius: 999px;
-    }
-
-    /* jQuery UI handle */
-    .slider-control .ui-slider-handle,
-    .leaflet-control-slider .ui-slider-handle {
-      width: 18px;
-      height: 18px;
-      margin-top: -5px;
-      background: #6f42c1 !important;
-      border: 2px solid #ffffff;
-      box-shadow: 0 6px 18px rgba(111,66,193,0.18);
-      border-radius: 50%;
-    }
-
-    /* HTML5 range fallback */
-    .leaflet-control-slider input[type="range"],
-    .slider-control input[type="range"] {
-      -webkit-appearance: none;
-      height: 8px;
-      background: rgba(111,66,193,0.08);
-      border-radius: 999px;
-    }
-    .leaflet-control-slider input[type="range"]::-webkit-slider-thumb,
-    .slider-control input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
+    .slider-control .ui-slider .ui-slider-range,
+    .leaflet-control-slider .ui-slider .ui-slider-range {
       background: #6f42c1;
-      border: 2px solid #fff;
-      box-shadow: 0 6px 18px rgba(111,66,193,0.18);
-      margin-top: -5px;
+      border-radius: 999px;
+      box-shadow: 0 3px 10px rgba(111,66,193,0.18) inset;
     }
 
-    /* date / label */
+    .slider-control .ui-slider .ui-slider-handle,
+    .leaflet-control-slider .ui-slider .ui-slider-handle,
+    .leaflet-control-slider input[type="range"]::-webkit-slider-thumb,
+    .slider-control input[type="range"]::-webkit-slider-thumb,
+    .leaflet-control-slider input[type="range"]::-moz-range-thumb,
+    .slider-control input[type="range"]::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
+      background: #6f42c1;
+      border: 3px solid #fff;
+      border-radius: 50%;
+      box-shadow: 0 8px 22px rgba(111,66,193,0.26);
+      margin-top: -6px;
+    }
+
+    /* keep responsive fallback */
+    @media (max-width: 760px) {
+      .leaflet-control-slider,
+      .slider-control,
+      .leaflet-control.slider-control {
+        width: calc(100% - 32px) !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        top: calc(160px + 8px) !important;
+        max-width: calc(100% - 32px) !important;
+      }
+    }
+
+    /* small date / label tweak */
     .leaflet-control-slider .date,
     .slider-control .date,
     .leaflet-control-slider .current-date {
@@ -465,21 +495,16 @@ var pendingMarkers = [];
 // helper to create marker, add time property and push to pendingMarkers (do NOT add to map/slider yet)
 function addTimedMarker(lat, lng, popupHtml, timeStr) {
   var opts = { icon: speakerIcon };
-  if (timeStr) opts.time = timeStr; // SliderControl expects a 'time' property (or configured timeAttribute)
+  if (timeStr) opts.time = timeStr;
   var m = L.marker([lat, lng], opts);
-  // bind popup with larger maxWidth/maxHeight so full info displays and auto panning is enabled
-  // add autoPan padding so popup will move above the fixed navbar (160px)
   m.bindPopup(popupHtml, {
     maxWidth: 520,
     minWidth: 220,
-    maxHeight: 360,        // lowered from 480 -> 360 so popups fit under the fixed header
-    autoPan: true,
-    // use Leaflet Points so auto-pan accounts for your fixed navbar
+    maxHeight: 360,
+    autoPan: false,                  // <-- prevent popup from auto-panning the map
     autoPanPadding: L.point(16, 16),
     autoPanPaddingTopLeft: L.point(0, 160)
   });
-
-  // push to pending list; we'll sort & add to the slider/map after all markers are defined
   pendingMarkers.push({ marker: m, time: timeStr || null });
   return m;
 }
@@ -696,7 +721,7 @@ var sliderControl = L.control.sliderControl({
   isEpoch: false,
   showAllOnStart: true,
   range: false,
-  followTime: true,
+  followTime: false,        // <-- disable follow so slider doesn't auto-pan the map
   alwaysShowDate: true,
   dateFormat: 'YYYY',
   speedSlider: false,
@@ -711,6 +736,30 @@ map.addControl(sliderControl);
 //this starts the slider
 sliderControl.startSlider();
 
+// attach lightweight detection for slider interaction / changes
+(function attachSliderInteractionGuards(){
+  window.__lastSliderChange = 0;
+  window.__sliderInteracting = false;
+  function markSliderChange(){ window.__lastSliderChange = Date.now(); }
+
+  // try to find the slider DOM (jQuery UI or HTML range fallback)
+  var s = document.querySelector('.leaflet-control-slider, .slider-control, .leaflet-control.slider-control');
+  if (!s) return;
+
+  var ui = s.querySelector('.ui-slider');
+  var range = s.querySelector('input[type="range"]');
+
+  [s, ui, range].forEach(function(el){
+    if (!el) return;
+    el.addEventListener('input', markSliderChange, {passive:true});
+    el.addEventListener('change', markSliderChange, {passive:true});
+    el.addEventListener('mousedown', function(){ window.__sliderInteracting = true; }, {passive:true});
+    el.addEventListener('mouseup', function(){ window.__sliderInteracting = false; }, {passive:true});
+    el.addEventListener('touchstart', function(){ window.__sliderInteracting = true; }, {passive:true});
+    el.addEventListener('touchend', function(){ window.__sliderInteracting = false; }, {passive:true});
+  });
+})();
+ 
 // Consolidated map.whenReady: run once after slider + markers present
 map.whenReady(function(){
   // recalc size (important when using fixed-top navbar)
@@ -770,24 +819,30 @@ map.on('popupopen', function(e){
     var source = popup && popup._source;
     if (!source) return;
 
+    // if slider was just moved or user is interacting with it, skip auto-pan/sync
+    var since = Date.now() - (window.__lastSliderChange || 0);
+    if (window.__sliderInteracting || since < 500) {
+      // still set slider time only if you want slider to reflect popup-open from user clicks:
+      // if popup was opened by a non-slider user action, let it update slider; here we skip to avoid recursion.
+      return;
+    }
+
     // set slider time if marker has one (best-effort)
     var t = (source.options && source.options.time) || (source.time || null);
     if (t) setSliderTime(t);
 
-    // ensure popup is visible and shift it above the fixed navbar
+    // ensure popup is visible and shift it above the fixed navbar (only when not suppressed)
     var latlng = (typeof source.getLatLng === 'function') ? source.getLatLng() : null;
     if (latlng) {
       map.panTo(latlng, { animate: true });
 
-      // measure popup height if possible and pan up enough to clear navbar
       setTimeout(function(){
         try {
           var popupEl = popup.getElement && popup.getElement();
           var popupH = (popupEl && (popupEl.offsetHeight || popupEl.clientHeight)) || 200;
-          var navbarH = 160; // match your header height
-          // shift by half popup height + small buffer (so popup sits fully below header)
+          var navbarH = 160;
           var shift = Math.ceil(popupH / 2) + navbarH - 40;
-          shift = Math.max(shift, navbarH); // ensure at least navbar height
+          shift = Math.max(shift, navbarH);
           map.panBy([0, -shift], { animate: true });
         } catch(e){}
       }, 220);
@@ -830,4 +885,26 @@ console.table((allMarkers.getLayers||[]).map(m => ({ lat: m.getLatLng().lat, lng
 if (allMarkers && allMarkers.getBounds && allMarkers.getLayers().length) {
   map.fitBounds(allMarkers.getBounds(), { paddingTopLeft: [0,160], padding: [20,20] });
 }
+</script>
+
+<script>
+  // diagnostic: print slider DOM info after load
+  window.addEventListener('load', function(){
+    setTimeout(function(){
+      var el = document.querySelector('.leaflet-control-slider, .slider-control, .leaflet-control.slider-control');
+      if (!el) {
+        console.error('Slider element not found in DOM.');
+      } else {
+        console.log('Slider element found:', el);
+        try {
+          var rect = el.getBoundingClientRect();
+          console.log('Slider rect:', rect);
+          var cs = window.getComputedStyle(el);
+          console.log('Slider computed style: top=' + cs.top + ', left=' + cs.left + ', position=' + cs.position + ', z-index=' + cs.zIndex + ', width=' + cs.width);
+        } catch(e){ console.warn('Unable to read slider metrics', e); }
+      }
+      // also log any JS errors related to SliderControl (optional)
+      if (window.sliderControl) console.log('sliderControl object:', sliderControl);
+    }, 400);
+  });
 </script>
