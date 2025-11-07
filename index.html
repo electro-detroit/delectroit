@@ -90,32 +90,32 @@
     border: 2px solid #6f42c1;      /* purple border */
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(111,66,193,0.18);
+
+    /* enforce consistent, smaller popup size */
+    max-width: 420px !important;
+    width: 420px !important;
+    max-height: 300px !important;
+    overflow: hidden;
   }
   .leaflet-popup-tip,
   .leaflet-popup-tip-container {
-    /* make the pointer match the popup background */
     color: #f3e8ff;
   }
   .leaflet-popup-content {
     margin: 8px 12px;
     font-size: 14px;
-  }
-  .leaflet-popup-close-button {
-    color: #6f42c1;                 /* close button color */
-    text-shadow: none;
+
+    /* make popup body scrollable when content exceeds fixed height */
+    max-height: 220px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
   }
 
-  /* optional: style any headings inside popups */
-  .leaflet-popup-content h5,
-  .leaflet-popup-content strong {
-    color: #40105a;
-    margin: 0 0 6px 0;
-  }
-
-  /* popup image styling - add this so images inside popups look good */
+  /* popup image sizing to keep layout consistent */
   .leaflet-popup-content .popup-img{
     width: 100%;
-    max-height: 140px;
+    max-height: 120px;
     object-fit: cover;
     display: block;
     margin: 0 0 8px 0;
@@ -472,10 +472,11 @@ function addTimedMarker(lat, lng, popupHtml, timeStr) {
   m.bindPopup(popupHtml, {
     maxWidth: 520,
     minWidth: 220,
-    maxHeight: 480,
+    maxHeight: 360,        // lowered from 480 -> 360 so popups fit under the fixed header
     autoPan: true,
-    autoPanPadding: [16, 16],
-    autoPanPaddingTopLeft: [0, 160]
+    // use Leaflet Points so auto-pan accounts for your fixed navbar
+    autoPanPadding: L.point(16, 16),
+    autoPanPaddingTopLeft: L.point(0, 160)
   });
 
   // push to pending list; we'll sort & add to the slider/map after all markers are defined
@@ -795,12 +796,23 @@ map.on('popupopen', function(e){
     var t = (source.options && source.options.time) || (source.time || null);
     if (t) setSliderTime(t);
 
-    // ensure popup is visible without forcing an immediate zoom change
+    // ensure popup is visible and shift it above the fixed navbar
     var latlng = (typeof source.getLatLng === 'function') ? source.getLatLng() : null;
     if (latlng) {
-      // gently center the marker and nudge up to account for the fixed navbar
       map.panTo(latlng, { animate: true });
-      setTimeout(function(){ try { map.panBy([0, -80], { animate: true }); } catch(e){} }, 220);
+
+      // measure popup height if possible and pan up enough to clear navbar
+      setTimeout(function(){
+        try {
+          var popupEl = popup.getElement && popup.getElement();
+          var popupH = (popupEl && (popupEl.offsetHeight || popupEl.clientHeight)) || 200;
+          var navbarH = 160; // match your header height
+          // shift by half popup height + small buffer (so popup sits fully below header)
+          var shift = Math.ceil(popupH / 2) + navbarH - 40;
+          shift = Math.max(shift, navbarH); // ensure at least navbar height
+          map.panBy([0, -shift], { animate: true });
+        } catch(e){}
+      }, 220);
     }
   } catch(err){ console.warn('popupopen handler error', err); }
 });
