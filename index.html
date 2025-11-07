@@ -406,24 +406,27 @@ const speakerIcon = L.divIcon({
 // create a layer collection for the slider control
 var sliderLayer = L.featureGroup();
 
-// helper to create marker, add time property and add to both map and sliderLayer
+// pending markers array so we can add them to the slider in chronological order
+var pendingMarkers = [];
+
+// helper to create marker, add time property and push to pendingMarkers (do NOT add to map/slider yet)
 function addTimedMarker(lat, lng, popupHtml, timeStr) {
   var opts = { icon: speakerIcon };
   if (timeStr) opts.time = timeStr; // SliderControl expects a 'time' property (or configured timeAttribute)
   var m = L.marker([lat, lng], opts);
   // bind popup with larger maxWidth/maxHeight so full info displays and auto panning is enabled
   // add autoPan padding so popup will move above the fixed navbar (160px)
-  m.bindPopup(popupHtml, { 
-    maxWidth: 520, 
-    minWidth: 220, 
-    maxHeight: 480, 
+  m.bindPopup(popupHtml, {
+    maxWidth: 520,
+    minWidth: 220,
+    maxHeight: 480,
     autoPan: true,
     autoPanPadding: [16, 16],
-    autoPanPaddingTopLeft: [0, 160] 
+    autoPanPaddingTopLeft: [0, 160]
   });
-  m.addTo(map);
-  sliderLayer.addLayer(m);
-  allMarkers.addLayer(m); // ensure this marker is part of the featureGroup used for "fit"
+
+  // push to pending list; we'll sort & add to the slider/map after all markers are defined
+  pendingMarkers.push({ marker: m, time: timeStr || null });
   return m;
 }
 
@@ -438,7 +441,7 @@ addTimedMarker(42.3280226, -83.0448932, `<div><img src="Assets/Hart_Plaza_Detroi
   <ul>
     <li><strong>Name:</strong> Hart Plaza</li>
     <li><strong>Address:</strong><br />1 Hart Plaza, Detroit, MI 48226, USA</li>
-    <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
+    <li><strong>Website:</strong> <a href="https://www.detroithistorical.org/learn/online-research/encyclopedia-of-detroit/hart-plaza" target="_blank" rel="noopener">Detroit Historical Society — Hart Plaza</a></li>
   </ul>
 </div>`, '1975');
 
@@ -449,7 +452,7 @@ addTimedMarker(42.3630469, -83.0852008, `<div><img src="Assets/The Marble Bar.jp
   <ul>
     <li><strong>Name:</strong> Marble Bar</li>
     <li><strong>Address:</strong><br />1501 Holden St, Detroit, MI 48208, USA</li>
-    <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
+    <li><strong>Website:</strong> <a href="https://themarblebar.com/" target="_blank" rel="noopener">themarblebar.com</a></li>
   </ul>
 </div>`, '2015');
 
@@ -460,7 +463,7 @@ addTimedMarker(42.3580524, -83.0167091, `<div><img src="Assets/Spot Lite.jpg" al
   <ul>
     <li><strong>Name:</strong> Spot Lite Detroit</li>
     <li><strong>Address:</strong><br />2905 Beaufait St, Detroit, MI 48207, USA</li>
-    <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
+    <li><strong>Website:</strong> <a href="https://www.spotlitedetroit.com/" target="_blank" rel="noopener">spotlitedetroit.com</a></li>
   </ul>
 </div>`, '2018');
 
@@ -471,7 +474,7 @@ addTimedMarker(42.3726414, -83.0635704, `<div><img src="Assets/Tangent Gallery.j
   <ul>
     <li><strong>Name:</strong> Tangent Gallery &amp; Hastings Street Ballroom</li>
     <li><strong>Address:</strong><br />715 Milwaukee Ave, Detroit, MI 48202, USA</li>
-    <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
+    <li><strong>Website:</strong> <a href="https://ra.co/clubs/16250" target="_blank" rel="noopener">Resident Advisor — Tangent Gallery</a></li>
   </ul>
 </div>`, '1999');
 
@@ -483,11 +486,20 @@ addTimedMarker(42.3380472, -83.0625672, `<div><img src="Assets/T+V Lounge.jpg" a
   <ul>
     <li><strong>Name:</strong> TV Lounge</li>
     <li><strong>Address:</strong><br />2548 Grand River Ave, Detroit, MI 48201, USA</li>
-    <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
+    <li><strong>Website:</strong> <a href="https://www.tvloungedetroit.com/" target="_blank" rel="noopener">tvloungedetroit.com</a></li>
   </ul>
 </div>`, '2007');
 
-addTimedMarker(42.3336153, -83.0548439, `<div><img src="Assets/City Club.jpg" alt="Leland City Club" class="popup-img"><div class="popup-center"><strong>Leland City Club</strong></div><div><p>Created: 1983 ADD DESCRIPTION</p></div>
+addTimedMarker(42.3336153, -83.0548439, `<div><img src="Assets/City Club.jpg" alt="Leland City Club" class="popup-img"><div class="popup-center"><strong>Leland 
+  City Club</strong></div><div><p>Created: 1983 
+    <p>Founded by Mike Higgins in 1983 as "Liedernacht," Leland City Club transformed from a luxurious casino ballroom into 
+    Detroit's premier gothic-industrial venue. The space's early 20th-century architecture, classical columns, and elaborate moldings now clash with black walls and 
+    murals, creating a visual tension that mirrors its sonic identity. 
+    <p>The dual-room layout carves out contested zones: a dimly lit front dance floor and a back room 
+    with a massive Nexo Alpha system. High ceilings and ornate details don't just frame the space; they shape sound itself, absorbing and diffusing frequencies in ways 
+    stripped-down modern venues can't replicate. Leland reimagines how historical architecture can resist gentrification's typical uses, turning bourgeois leisure 
+    infrastructure into a working-class subcultural gathering space.
+</p></div>
   <ul>
     <li><strong>Name:</strong> Leland City Club</li>
     <li><strong>Address:</strong><br />400 Bagley St, Detroit, MI 48226, USA</li>
@@ -495,11 +507,19 @@ addTimedMarker(42.3336153, -83.0548439, `<div><img src="Assets/City Club.jpg" al
   </ul>
 </div>`, '1983');
 
-addTimedMarker(42.3626399, -83.0819244, `<div><img src="Assets/Lincoln Factory.jpg" alt="The Lincoln Factory" class="popup-img"><div class="popup-center"><strong>The Lincoln Factory</strong></div><div><p>Created: 1908 ADD DESCRIPTION</p></div>
+addTimedMarker(42.3626399, -83.0819244, `<div><img src="Assets/Lincoln Factory.jpg" alt="The Lincoln Factory" class="popup-img"><div class="popup-center"><strong>The Lincoln Factory</strong></div><div>
+  <p>Created: 1908 
+    <p>Built in 1908 for Warren Motor Car Co. and later serving as the first Lincoln Motor Factory under Henry Leland in 1917, 
+    this National Register site shows how industrial spaces can be reimagined for cultural production. Converting an automotive factory into 
+    a contemporary venue connects Detroit's manufacturing legacy with its artistic present, converting an automotive factory into a music and 
+    arts venue for sonic experimentation and community gathering. The transformation contests assumptions about what former production sites should
+      , resisting luxury condo conversions in favor of accessible cultural infrastructure that replaces assembly lines with sound 
+      and collective experience.
+</p></div>
   <ul>
     <li><strong>Name:</strong> The Lincoln Factory</li>
     <li><strong>Address:</strong><br />1240 Holden St, Detroit, MI 48202, USA</li>
-    <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
+    <li><strong>Website:</strong> <a href="https://thelincolnfactory.com/" target="_blank" rel="noopener">thelincolnfactory.com</a></li>
   </ul>
 </div>`, '1908');
 
@@ -507,19 +527,45 @@ addTimedMarker(42.3311594, -83.0730077, `<div>
   <img src="Assets/Motor City Wine.jpg" alt="Motor City Wine" class="popup-img" loading="lazy"
        style="width:100%; max-height:140px; object-fit:cover; border-radius:6px;">
   <div class="popup-center"><strong>Motor City Wine</strong></div>
-  <div><p>Created: (date n/a) ADD DESCRIPTION</p></div>
+  <div><p>Created: 2013
+    <p> Motor City Wine challenged who gets to claim certain kinds of nighttime space in Detroit. When owners David and Melissa Armin-Parcells moved from a temporary
+     downtown spot to Corktown's former Express Bar in 2013, expanding to 2,000 square feet with outdoor patio and parking, they brought small-producer, organic-focused wine culture into 
+     historically blue-collar territory. By hosting musicians and DJs alongside wine service, the venue contested the idea that "highbrow" leisure and working-class neighborhoods are incompatible.
+      Motor City Wine navigated Corktown's contested transformation by arguing that nightlife diversity, from techno clubs to wine bars, strengthens rather than displaces community identity, 
+      reimagining who belongs in spaces of cultural consumption.
+/p></div>
   <ul>
     <li><strong>Name:</strong> Motor City Wine</li>
     <li><strong>Address:</strong><br/>1949 Michigan Ave, Detroit, MI 48216, USA</li>
-    <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener">Website</a></li>
+    <li><strong>Website:</strong> <a href="https://motorcitywine.com/" target="_blank" rel="noopener">motorcitywine.com</a></li>
   </ul>
-</div>`, '2025');
+</div>`, '2013');
 
-addTimedMarker(42.3338199, -83.0499098, `<div><img src="Assets/Speaker Box.jpg" alt="SPKR BOX" class="popup-img"><div class="popup-center"><strong>SPKRBOX</strong></div><div><p>Created: 2022 ADD DESCRIPTION</p></div>
+
+addTimedMarker(42.3668187, -83.0767079, `<div><img src="Assets/Northern Lights Lounge.jpg" alt="Northern Lights Lounge" class="popup-img"><div class="popup-center"><strong>Northern Lights Lounge</strong></div><div><p>Created: 2004
+  <br>Since 2004, co-owners Solaka, Steele, and Visee have transformed 660 W. Baltimore, converting an asphalt parking lot into a brick-paved patio with trees, layering Sunday brunch 
+  atop nightlife programming. This "all things to some people" philosophy contests profit-driven specialization: as a restaurant, bar, music venue, and outdoor gathering space, Northern 
+  Lights reimagines urban infrastructure through flexible use. Sound programming and multi-use design create temporal diversity that sustains community ownership rather than displacement, 
+  turning a single block in Detroit's New Center into contested commons space.
+</p></div>
+  <ul>
+    <li><strong>Name:</strong> Northern Lights Lounge</li>
+    <li><strong>Address:</strong><br/>660 W. Baltimore, Detroit, MI</li>
+    <li><strong>Website:</strong> <a href="https://www.northernlightslounge.com/" target="_blank" rel="noopener">northernlightslounge.com</a></li>
+  </ul>
+</div>`, '2004');
+
+addTimedMarker(42.3338199, -83.0499098, `<div><img src="Assets/Speaker Box.jpg" alt="SPKR BOX" class="popup-img"><div class="popup-center"><strong>SPKRBOX</strong></div><div>
+  <p>Created: 2022 
+    <p>SPKRBOX makes Detroit's techno heritage part of everyday life. Born from Urban Bean Co., the Movement festival's "unofficial official" coffee shop since 2000, it reopened 
+    in 2022 as a Euro-style cafe with a full bar, blurring the line between daytime coffee runs and nighttime hangouts. The venue pushes back against treating electronic music culture as something
+     temporary or special-occasion, instead embedding techno into daily rhythms. What was once a seasonal festival gathering spot becomes a year-round community space where sonic resistance 
+     lives permanently.
+</p></div>
   <ul>
     <li><strong>Name:</strong> SPKRBOX</li>
     <li><strong>Address:</strong><br />1501 Holden St, Detroit, MI 48208, USA</li>
-    <li><strong>Website:</strong> <a href="#" target="_blank" rel="noopener"></a></li>
+    <li><strong>Website:</strong> <a href="https://spkrbox.bar/" target="_blank" rel="noopener">spkrbox.bar</a></li>
   </ul>
 </div>`, '2022');
 
@@ -562,7 +608,8 @@ addTimedMarker(42.3440836, -83.0615332, `<div><img src="Assets/detroit_shipping_
 addTimedMarker(42.3754522, -83.0654343, `<div><img src="Assets/red_door_digital.jpg" alt="Red Door Gallery" class="popup-img"><div class="popup-center"><strong>Red Door Gallery</strong></div><div><p>Created: 2010
   <br>Red Door Digital began in the early 2010s in a former print shop, maintaining the industrial character of its North End location.
   <br>The venue operates as both a gallery and underground music space, hosting techno and house events for Detroit's dedicated electronic music community.
-  <br>By preserving the raw aesthetic of its working-class origins while fostering cutting-edge digital art and music, Red Door embodies the tension between Detroit's industrial past and its technological future.
+  <br>By preserving the raw aesthetic of its working-class origins while fostering cutting-edge digital art and music, Red Door embodies the tension between Detroit's industrial past and its 
+  technological future.
 </p></div>
   <ul>
     <li><strong>Name:</strong> Red Door Gallery</li>
@@ -583,6 +630,30 @@ addTimedMarker(42.3511427, -83.060109, `<div><img src="Assets/magic_stick.jpg" a
   </ul>
 </div>`, '1991');
 
+// AFTER all addTimedMarker(...) calls, add markers to the map and slider in chronological order
+(function commitPendingMarkersInChronOrder(){
+  // sort by numeric year ascending; non-numeric times go last
+  pendingMarkers.sort(function(a,b){
+    var at = parseInt(a.time, 10);
+    var bt = parseInt(b.time, 10);
+    if (isNaN(at)) at = Infinity;
+    if (isNaN(bt)) bt = Infinity;
+    return at - bt;
+  });
+
+  // add sorted markers to map, sliderLayer and allMarkers
+  pendingMarkers.forEach(function(p){
+    p.marker.addTo(map);
+    sliderLayer.addLayer(p.marker);
+    allMarkers.addLayer(p.marker);
+  });
+})();
+
+// compute numeric min/max years from pendingMarkers (used to initialize slider)
+var _years = pendingMarkers.map(function(p){ return parseInt(p.time,10); }).filter(function(n){ return !isNaN(n); }).sort(function(a,b){ return a-b; });
+var sliderMinYear = _years.length ? _years[0] : null;
+var sliderMaxYear = _years.length ? _years[_years.length-1] : null;
+
 // Initialize the time slider control
 var sliderControl = L.control.sliderControl({
   position: 'topright',
@@ -591,7 +662,7 @@ var sliderControl = L.control.sliderControl({
   isEpoch: false,
   showAllOnStart: true,
   range: false,
-  followTime: true,
+  followTime: false,       // don't auto-open the marker popup for the current time
   alwaysShowDate: true,
   dateFormat: 'YYYY',
   speedSlider: false,
@@ -605,6 +676,155 @@ map.addControl(sliderControl);
 
 //this starts the slider
 sliderControl.startSlider();
+
+/*
+  Make initial zoom a bit closer than fitBounds, but clamp so we don't overzoom.
+  (User asked for a closer initial map.)
+*/
+map.whenReady(function(){
+  if (allMarkers && allMarkers.getLayers().length) {
+    map.fitBounds(allMarkers.getBounds(), { paddingTopLeft: [0,160], padding: [20,20] });
+    setTimeout(function(){
+      // closer start: +2 levels but clamp to 14 (adjust if you want different closeness)
+      var targetZoom = Math.min(map.getZoom() + 2, 14);
+      map.setZoom(targetZoom);
+      map.panBy([0, -80], { animate: true });
+    }, 350);
+  }
+});
+
+/*
+  Helper: try to programmatically set slider to a given time (best-effort across different SliderControl APIs)
+*/
+function setSliderTime(t) {
+  if (!t) return false;
+  var attempts = ['setTime','setCurrentTime','setDate','setValue','moveTo'];
+  for (var i = 0; i < attempts.length; i++) {
+    var fn = attempts[i];
+    if (sliderControl && typeof sliderControl[fn] === 'function') {
+      try { sliderControl[fn](t); return true; } catch(e){ /* ignore */ }
+    }
+  }
+  // some builds expose nested slider object
+  if (sliderControl && sliderControl.slider) {
+    if (typeof sliderControl.slider.setValue === 'function') {
+      try { sliderControl.slider.setValue(t); return true; } catch(e){}
+    }
+    // jQuery UI-style slider might emit 'slide' events; try trigger if present
+    if (typeof sliderControl.slider.val === 'function') {
+      try { sliderControl.slider.val(t); return true; } catch(e){}
+    }
+  }
+  // DOM fallback: find any range/input element inside the control and set its value
+  var el = document.querySelector('.leaflet-control-slider input[type="range"], .slider-control input[type="range"], .leaflet-slider input[type="range"], .slider-control .ui-slider-range');
+  if (el) {
+    try { el.value = t; el.dispatchEvent(new Event('input')); return true; } catch(e){}
+  }
+  return false;
+}
+
+/*
+  When a popup opens, pan/zoom the map so the popup is visible and set the slider to the popup's time.
+  This ensures slider movement <-> map/popup movement happens simultaneously.
+*/
+map.on('popupopen', function(e){
+  try {
+    var popup = e.popup;
+    var source = popup && popup._source;
+    if (!source) return;
+
+    // if marker has a time, set slider to it (best-effort)
+    var t = (source.options && source.options.time) || (source.time || null);
+    if (t) setSliderTime(t);
+
+    // ensure popup is clearly visible: pan to marker then nudge up (account for navbar)
+    var latlng = (typeof source.getLatLng === 'function') ? source.getLatLng() : null;
+    if (latlng) {
+      // if current zoom is low, zoom closer a bit
+      var minZoomForPopup = 13;
+      if (map.getZoom() < minZoomForPopup) map.setZoom(minZoomForPopup);
+      map.panTo(latlng, { animate: true });
+      // nudge so popup sits under the navbar
+      setTimeout(function(){ map.panBy([0, -100], { animate: true }); }, 220);
+    }
+  } catch(err){ console.warn('popupopen handler error', err); }
+});
+
+/*
+  If the slider UI emits DOM 'input' or plugin events, detect them and open the corresponding marker popup
+  so map movement and popups stay in sync while the slider moves.
+*/
+(function attachSliderDomListeners(){
+  // try a few selector candidates that SliderControl implementations might use
+  var selectors = [
+    '.leaflet-control-slider input[type="range"]',
+    '.slider-control input[type="range"]',
+    '.leaflet-slider input[type="range"]',
+    '.slider-control .ui-slider-handle',
+    '.slider-control'
+  ];
+
+  function handleSliderValue(val){
+    if (!val) return;
+    // find first marker with matching time (string match)
+    var match = pendingMarkers.find(function(p){ return String(p.time) === String(val); });
+    if (match && match.marker) {
+      // open popup (popupopen handler will handle panning and syncing)
+      match.marker.openPopup();
+    }
+  }
+
+  // attach event listeners on any matching elements we find
+  selectors.forEach(function(sel){
+    var el = document.querySelector(sel);
+    if (!el) return;
+    // if it's an input range
+    if (el.tagName && el.tagName.toLowerCase() === 'input') {
+      el.addEventListener('input', function(ev){ handleSliderValue(ev.target.value); });
+      el.addEventListener('change', function(ev){ handleSliderValue(ev.target.value); });
+    } else {
+      // listen for generic events the plugin might emit
+      el.addEventListener('mousemove', function(){ 
+        var v = el.getAttribute && el.getAttribute('aria-valuenow') || el.value || el.textContent || null;
+        handleSliderValue(v);
+      });
+      el.addEventListener('click', function(){ 
+        var v = el.getAttribute && el.getAttribute('aria-valuenow') || el.value || el.textContent || null;
+        handleSliderValue(v);
+      });
+    }
+  });
+
+  // As a final fallback, observe DOM changes inside the control and react when a numeric/text value appears
+  var controlContainer = document.querySelector('.leaflet-control.slider-control, .leaflet-control-slider, .slider-control');
+  if (controlContainer && window.MutationObserver) {
+    var mo = new MutationObserver(function(muts){
+      for (var i=0;i<muts.length;i++){
+        var m = muts[i];
+        if (m.type === 'childList' || m.type === 'characterData') {
+          // attempt to read a numeric/year-like string from the control
+          var text = controlContainer.textContent.trim().match(/\b(18|19|20)\d{2}\b/);
+          if (text && text[0]) handleSliderValue(text[0]);
+        }
+      }
+    });
+    mo.observe(controlContainer, { childList: true, subtree: true, characterData: true });
+  }
+})();
+
+/*
+  When user clicks a marker we already try to set the slider; ensure that continues to work:
+  (this was already in place but leaving a defensive rebind to guarantee sync)
+*/
+pendingMarkers.forEach(function(p){
+  p.marker.off && p.marker.off('click'); // in case of previous bindings
+  p.marker.on('click', function(){
+    var t = (p.marker.options && p.marker.options.time) || p.time;
+    if (t) setSliderTime(t);
+    // openPopup will trigger popupopen handler which pans the map
+    setTimeout(function(){ p.marker.openPopup(); }, 40);
+  });
+});
 
 // Modal actions
 document.getElementById('zoom-detroit').addEventListener('click', function(e){
@@ -669,3 +889,4 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 </script>
+</body>
