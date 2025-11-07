@@ -29,6 +29,15 @@
     body.dark .navbar.fixed-top { box-shadow: 0 6px 18px rgba(0,0,0,0.5); }
     /* search removed */
     mark.match { background: #ffe58a; color:#291b00; padding:0 .15rem; border-radius:2px; }
+
+    /* bibliography: remove bullets and tighten spacing; italics applied in JS */
+    .bibliography { padding-left: 0; }
+    .bibliography p {
+      margin: 0 0 .5rem;
+      padding-left: 1.5em; /* space reserved for hanging indent */
+      text-indent: -1.5em; /* pulls the first line left to create hanging indent */
+      line-height: 1.4;
+    }
   </style>
 </head>
 <body>
@@ -90,15 +99,18 @@ onversion. Together, these narratives demonstrate that urban venues are not st
 
     <section class="section-card reveal" aria-labelledby="dataused-heading">
       <h2 id="dataused-heading" class="h5 mb-2">Data Used</h2>
-      <!-- Add dataset descrsiptions, sources, formats here --><p><strong>Scholarly Resources:</strong> Academic articles and research papers provided theoretical frameworks and historical context for understanding Detroit's sonic spaces and helping build our narrative.</p>
-      <p><strong>Venue Documentation:</strong> The official websites of venues and locations offered operational details, programming information, and institutional histories.</p>
-      <p><strong>Public Data:</strong> We utilized datasets from Detroit Data (detroitdata.org) to identify and verify location information after making our decision to focus on Detroit as our geographic area of study.</p>
+      <!-- Add dataset descrsiptions, sources, formats here --><p><strong>Scholarly Resources:</strong> Academic articles and research papers provided theoretical frameworks 
+        and historical context for understanding Detroit's sonic spaces and helping build our narrative.</p>
+      <p><strong>Venue Documentation:</strong> The official websites of venues and locations offered operational details, programming 
+        information, and institutional histories.</p>
+      <p><strong>Public Data:</strong> We utilized datasets from Detroit Data (detroitdata.org) to identify and verify location information 
+        after making our decision to focus on Detroit as our geographic area of study.</p>
       <p class="mb-0"></p>
     </section>
 
     <section class="section-card reveal" aria-labelledby="methodology-heading">
       <h2 id="methodology-heading" class="h5 mb-2">Methodology</h2>
-      <!-- Describe collection, verification, processing methods here --><p><strong>Framework:</strong> Bootstrap
+      <!-- Describe collection, verification, processing methods here --><p><strong>Framework:</strong> Bootstrap, OpenStreetMap contributors.
 
 <p><strong>Library:</strong> Leaflet.js enabled interactive mapping features </p>
 
@@ -118,14 +130,9 @@ onversion. Together, these narratives demonstrate that urban venues are not st
 
     <section id="biblio" class="section-card reveal" aria-labelledby="biblio-heading">
       <h2 id="biblio-heading" class="h5 mb-2">Bibliography</h2>
-      <ul id="biblio-list" class="mb-0"></ul>
+      <div id="biblio-list" class="mb-0 bibliography"></div>
     </section>
      
-    <section class="section-card reveal" aria-labelledby="credits-heading">
-      <h2 id="credits-heading" class="h5 mb-2">Credits</h2>
-      <p class="mb-2">Created by the Delectroit project team. Map tiles: OpenStreetMap contributors. UI uses Bootstrap and Leaflet.</p>
-      <p class="mb-0"><strong>Version:</strong> 1.0 • <strong>Year:</strong> 2021</p>
-    </section>
 
     <section class="section-card reveal" aria-labelledby="data-heading">
       <h2 id="data-heading" class="h5 mb-2">Data & licensing</h2>
@@ -229,7 +236,30 @@ onversion. Together, these narratives demonstrate that urban venues are not st
         { name: "Ayaat Ismail", role: "Research & mapping", email: "ayaat@example.com" },
       ],
       bibliography: [
-        
+        '"About." Paramita Sound, www.paramitasound.com/about. Accessed 7 Nov. 2025.',
+        'Fink, Thomas. "Soundwalks and Memory: The Jakarta Fatahillah Square Case." Urban Studies, vol. 15, 2020, pp. 586–604.',
+        '"Hart Plaza." Detroit Historical Society, www.detroithistorical.org/learn/online-research/encyclopedia-of-detroit/hart-plaza. Accessed 7 Nov. 2025.',
+        '"History." Leland City Club, lelandcityclub.net/history. Accessed 7 Nov. 2025.',
+        '"History." Russell Industrial Center, www.russellindustrialcenter.com/history. Accessed 7 Nov. 2025.',
+        'Hulme, Mike, and Peter C. T. "A Taxonomy of Soundscape Interventions." Journal of Environmental Psychology, vol. 77, 2022, pp. 101–117.',
+        'International Organization for Standardization. ISO 12913-1:2014: Acoustics—Soundscape. Part 1: Definition and Conceptual Framework. ISO, 2014.',
+        '"The Lincoln Factory." The Lincoln Factory, thelincolnfactory.com/. Accessed 7 Nov. 2025.',
+        '"The Magic Stick." Majestic Detroit, www.majesticdetroit.com/about/the-magic-stick/. Accessed 7 Nov. 2025.',
+        '"The Marble Bar." The Marble Bar, themarblebar.com/. Accessed 7 Nov. 2025.',
+        'Maffei, Luca, and Gabriele De Santo. "Historical Soundscapes of Castilian Cities." Journal of Cultural Heritage, vol. 42, 2019, pp. 56–68.',
+        '"Motor City Wine." Motor City Wine, motorcitywine.com/. Accessed 7 Nov. 2025.',
+        '"Northern Lights Lounge." Northern Lights Lounge, www.northernlightslounge.com/. Accessed 7 Nov. 2025.',
+        '"Our Story." Detroit Shipping Company, www.detroitshippingcompany.com/our-story. Accessed 7 Nov. 2025.',
+        '"Red Door Digital." Facebook, www.facebook.com/RDDPrinting/. Accessed 7 Nov. 2025.',
+        'Schafer, R. Murray. The Soundscape: Our Sonic Environment and the Tuning of the World. Destiny Books, 1994.',
+        '"Spot Lite Detroit." Spot Lite Detroit, www.spotlitedetroit.com/. Accessed 7 Nov. 2025.',
+        '"SPKRBOX Detroit." SPKRBOX, spkrbox.bar/. Accessed 7 Nov. 2025.',
+        '"Tangent Gallery: Detroit." Party Protocol Toolkit, www.partyprotoolkit.com/project/detroit-tangent-gallery/. Accessed 7 Nov. 2025.',
+        'Truax, Barry. Acoustic Communication. Ablex Publishing, 2001.',
+        '"TV Lounge Anniversary: Detroit Dance Music." Detroit Free Press, 10 Aug. 2016, www.freep.com/story/entertainment/2016/08/10/tv-lounge-anniversary-detroit-dance-music/88433768/. Accessed 7 Nov. 2025.',
+        '"TV Lounge Detroit." TV Lounge Detroit, www.tvloungedetroit.com/. Accessed 7 Nov. 2025.',
+        '"Urban Bean Co. Coffee Shop Reborn as SPKRBOX Opening Movement Weekend." The Detroit News, 24 May 2022, www.detroitnews.com/story/entertainment/dining/2022/05/24/urban-bean-co-coffee-shop-reborn-spkrbox-opening-movement-weekend/9836435002/. Accessed 7 Nov. 2025.',
+        'Vecchiola, C. "Submerge in Detroit: Techno\'s Creative Response to Urban Crisis." Journal of American Studies, vol. 45, 2011, pp. 95–111.'
       ]
     };
 
@@ -259,10 +289,17 @@ onversion. Together, these narratives demonstrate that urban venues are not st
         }).join('');
       }
 
-      // bibliography
+      // bibliography (no bullets; italicize quoted titles and probable publication names)
       const bList = document.getElementById('biblio-list');
       if (bList && d.bibliography && d.bibliography.length){
-        bList.innerHTML = d.bibliography.map(b => `<li>${escapeHtml(b)}</li>`).join('');
+        bList.innerHTML = d.bibliography.map(b => {
+          let s = escapeHtml(b);
+          // Italicize text originally in quotes (escapeHtml converted " to &quot;)
+          s = s.replace(/&quot;([^&]+?)&quot;/g, '<em>$1</em>');
+          // Italicize likely publication names that appear after a period and before the next comma
+          s = s.replace(/\. ([A-Z][^,]+?),/g, '. <em>$1</em>,');
+          return `<p>${s}</p>`;
+        }).join('');
       }
     }
 
