@@ -76,11 +76,12 @@
 
   /* Bootstrap-icon marker styling */
   .bi-marker {
-    font-size: 24px;        /* adjust marker size */
+    font-size: 40px;        /* increased marker size */
     color: #6f42c1;         /* purple marker color */
     line-height: 1;
     display: inline-block;
     text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    transform: translateY(2px); /* tweak to visually center larger icon */
   }
 
   /* popup color overrides (light purple background, darker purple border/text) */
@@ -481,9 +482,9 @@ const biHtml = `<i class="bi bi-speaker-fill bi-marker" aria-hidden="true"></i>`
 const speakerIcon = L.divIcon({
   className: '',           // keep empty so only our <i> styles apply
   html: biHtml,
-  iconSize: [28,28],
-  iconAnchor: [14,14],
-  popupAnchor: [0,-14]
+  iconSize: [44,44],       // match larger font-size
+  iconAnchor: [22,22],     // center the icon on its coordinate
+  popupAnchor: [0,-22]
 });
 
 // create a layer collection for the slider control
