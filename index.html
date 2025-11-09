@@ -739,12 +739,39 @@ sliderControl.startSlider();
 
 // attach lightweight detection for slider interaction / changes
 (function attachSliderInteractionGuards(){
+  // global flags used by popupopen handler
   window.__lastSliderChange = 0;
   window.__sliderInteracting = false;
-  function markSliderChange(){ window.__lastSliderChange = Date.now(); }
+  window.__suppressPopupPan = false;
+  var suppressTimer = null;
+
+  function startSuppress() {
+    window.__sliderInteracting = true;
+    window.__suppressPopupPan = true;
+    if (suppressTimer) clearTimeout(suppressTimer);
+    // clear suppression shortly after the last change
+    suppressTimer = setTimeout(function(){
+      window.__sliderInteracting = false;
+      window.__suppressPopupPan = false;
+      suppressTimer = null;
+    }, 350);
+  }
+
+  function markSliderChange(){ 
+    window.__lastSliderChange = Date.now();
+    startSuppress();
+  }
 
   // try to find the slider DOM (jQuery UI or HTML range fallback)
   var s = document.querySelector('.leaflet-control-slider, .slider-control, .leaflet-control.slider-control');
+
+  // also listen to sliderControl events (if the plugin exposes them)
+  if (window.sliderControl && typeof sliderControl.on === 'function') {
+    ['slide','change','timechange','valuechanged'].forEach(function(ev){
+      try { sliderControl.on(ev, markSliderChange); } catch(e){}
+    });
+  }
+
   if (!s) return;
 
   var ui = s.querySelector('.ui-slider');
@@ -754,10 +781,10 @@ sliderControl.startSlider();
     if (!el) return;
     el.addEventListener('input', markSliderChange, {passive:true});
     el.addEventListener('change', markSliderChange, {passive:true});
-    el.addEventListener('mousedown', function(){ window.__sliderInteracting = true; }, {passive:true});
-    el.addEventListener('mouseup', function(){ window.__sliderInteracting = false; }, {passive:true});
-    el.addEventListener('touchstart', function(){ window.__sliderInteracting = true; }, {passive:true});
-    el.addEventListener('touchend', function(){ window.__sliderInteracting = false; }, {passive:true});
+    el.addEventListener('mousedown', startSuppress, {passive:true});
+    el.addEventListener('mouseup', function(){ /* keep debounce to clear */ }, {passive:true});
+    el.addEventListener('touchstart', startSuppress, {passive:true});
+    el.addEventListener('touchend', function(){ /* keep debounce to clear */ }, {passive:true});
   });
 })();
  
@@ -821,32 +848,38 @@ map.on('popupopen', function(e){
     if (!source) return;
 
     // if slider was just moved or user is interacting with it, skip auto-pan/sync
+    // (this prevents slider <-> popup recursion and visible jumping)
     var since = Date.now() - (window.__lastSliderChange || 0);
-    if (window.__sliderInteracting || since < 500) {
-      // still set slider time only if you want slider to reflect popup-open from user clicks:
-      // if popup was opened by a non-slider user action, let it update slider; here we skip to avoid recursion.
+    if (window.__suppressPopupPan || window.__sliderInteracting || since < 300) {
+      // still allow popup to open, but do not pan the map or re-set the slider
+      // optionally ensure popup is fully visible without animated pan (non-jumping)
       return;
     }
 
-    // set slider time if marker has one (best-effort)
+    // If here, popup opened from a user click (not slider). Sync slider and pan once.
     var t = (source.options && source.options.time) || (source.time || null);
-    if (t) setSliderTime(t);
+    if (t) {
+      // set slider but avoid triggering more map movement: use silent set if available
+      setSliderTime(t);
+    }
 
-    // ensure popup is visible and shift it above the fixed navbar (only when not suppressed)
+    // center the popup above the fixed navbar with a single coordinated pan
     var latlng = (typeof source.getLatLng === 'function') ? source.getLatLng() : null;
     if (latlng) {
-      map.panTo(latlng, { animate: true });
-
+      // first center (no animation helps avoid mid-animation jumps)
+      map.setView(latlng, Math.max(map.getZoom(), map.getZoom()), { animate: false });
+      // then shift up to account for navbar + popup height using a single animated panBy
       setTimeout(function(){
         try {
           var popupEl = popup.getElement && popup.getElement();
-          var popupH = (popupEl && (popupEl.offsetHeight || popupEl.clientHeight)) || 200;
+          var popupH = (popupEl && (popupEl.offsetHeight || popupEl.clientHeight)) || 220;
           var navbarH = 160;
+          // compute upward shift (pixels)
           var shift = Math.ceil(popupH / 2) + navbarH - 40;
           shift = Math.max(shift, navbarH);
           map.panBy([0, -shift], { animate: true });
         } catch(e){}
-      }, 220);
+      }, 60);
     }
   } catch(err){ console.warn('popupopen handler error', err); }
 });
